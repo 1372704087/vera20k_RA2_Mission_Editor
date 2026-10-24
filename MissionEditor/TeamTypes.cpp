@@ -312,6 +312,29 @@ void CTeamTypes::UpdateDialog()
 		GetDlgItem(IDC_MINDCONTROLDECISION)->ShowWindow(SW_HIDE);
 		m_MCD_L.ShowWindow(SW_HIDE);
 	}
+	else
+	{
+		// the mind-control decision items come from the dialog template
+		// (DLGINIT); translate them in place, keeping any selection
+		CComboBox* mcd=(CComboBox*)GetDlgItem(IDC_MINDCONTROLDECISION);
+		if(mcd!=NULL)
+		{
+			const int n=mcd->GetCount();
+			for(int i=0;i<n;i++)
+			{
+				CString s;
+				mcd->GetLBText(i,s);
+				CString t=TranslateStringACP((LPCTSTR)s);
+				if(t!=s)
+				{
+					int sel=mcd->GetCurSel();
+					mcd->DeleteString(i);
+					mcd->InsertString(i,t);
+					if(sel==i) mcd->SetCurSel(i);
+				}
+			}
+		}
+	}
 
 	CIniFile& ini=Map->GetIniFile();
 
@@ -369,7 +392,7 @@ void CTeamTypes::UpdateDialog()
 		CString str;
 		str=tt;
 		str+=" (";
-		str+=ini.sections[tt].values["Name"];
+		str+=TranslateStringACP(ini.sections[tt].values["Name"]); // display-only; stored id is unaffected
 		str+=")";
 
 		m_TeamTypes.AddString(str);
@@ -386,7 +409,7 @@ void CTeamTypes::UpdateDialog()
 		str+=" (";
 		if(ini.sections.find(tt)!=ini.sections.end())
 		{
-			str+=ini.sections[tt].values["Name"];
+			str+=TranslateStringACP(ini.sections[tt].values["Name"]); // display-only; stored id is unaffected
 		}
 		str+=")";
 
@@ -404,7 +427,7 @@ void CTeamTypes::UpdateDialog()
 		str+=" (";
 		if(ini.sections.find((char*)(LPCTSTR)tt)!=ini.sections.end())
 		{
-			str+=ini.sections[(char*)(LPCTSTR)tt].values["Name"];
+			str+=TranslateStringACP(ini.sections[(char*)(LPCTSTR)tt].values["Name"]); // display-only; stored id is unaffected
 		}
 		str+=")";
 
