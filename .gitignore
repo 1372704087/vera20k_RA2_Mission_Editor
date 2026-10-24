@@ -69,3 +69,5 @@ intermediate/
 vcpkg_installed/
 vcpkg_downloads/
 [Tt]emplate/
+imgui-editor/build/
+imgui-editor/3rdparty/imgui/
