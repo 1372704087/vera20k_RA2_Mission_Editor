@@ -4011,6 +4011,29 @@ void CFinalSunDlg::OnMaptoolsBatchspawns()
 		return;
 	}
 
+	// Placing repositions any existing waypoint with the same id; triggers
+	// may reference waypoints, so ask before overwriting existing ones.
+	int existing=0;
+	{
+		int i;
+		for(i=0;i<Map->GetWaypointCount();i++)
+		{
+			CString id;
+			DWORD pos;
+			Map->GetWaypointData(i,&id,&pos);
+			const int n=atoi(id);
+			if(n>=0&&n<count) existing++;
+		}
+	}
+	if(existing>0)
+	{
+		char c[50];
+		itoa(existing,c,10);
+		if(MessageBox(CString(c)+" of the requested waypoint ids already exist and will be MOVED. "
+			"Triggers referencing them keep the id but the position changes. Continue?",
+			"Batch place start waypoints",MB_YESNO|MB_ICONQUESTION)!=IDYES) return;
+	}
+
 	// Grid layout over the diamond, ported from vera20k's tools/scale_map.py
 	// grid_starts: in screen-aligned (u,v) = (rx-ry, rx+ry) space the diamond
 	// is the rectangle |u|<size, size<v<=3*size; starts sit on a near-square

@@ -180,6 +180,36 @@ void CViewObjects::OnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 				AD.type=3+val-23;
 				break;
 			}
+			// VERA20K start waypoints 8..29 (player 9..30). lParam 9000+e keeps
+			// clear of the shared low ids (36..38 celltags, 40..42 nodes,
+			// 50..54 tunnels).
+			case 9008:
+			case 9009:
+			case 9010:
+			case 9011:
+			case 9012:
+			case 9013:
+			case 9014:
+			case 9015:
+			case 9016:
+			case 9017:
+			case 9018:
+			case 9019:
+			case 9020:
+			case 9021:
+			case 9022:
+			case 9023:
+			case 9024:
+			case 9025:
+			case 9026:
+			case 9027:
+			case 9028:
+			case 9029:
+			{
+				AD.mode=3;
+				AD.type=3+val-9000;
+				break;
+			}
 			case 36: // celltag stuff
 			{
 				AD.mode=4;
@@ -671,7 +701,10 @@ void CViewObjects::UpdateDialog()
 		char c[50];
 		itoa(e+1,c,10);
 		ins=TranslateStringVariables(1, ins, c);
-		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, ins, 0,0,0,0, 23+e, rootitems[12], TVI_LAST );
+		// players 1..8 keep the historic lParam ids (23..30); players 9..30
+		// (VERA20K) use 9000+e so the low ids stay exactly as they were
+		const int lparam=(e<8)?(23+e):(9000+e);
+		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, ins, 0,0,0,0, lparam, rootitems[12], TVI_LAST );
 	}
 	tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("StartpointsDelete"), 0,0,0,0, 21, rootitems[12], TVI_LAST );
 
