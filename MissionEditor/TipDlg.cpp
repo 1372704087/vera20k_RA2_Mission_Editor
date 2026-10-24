@@ -262,7 +262,11 @@ void CTipDlg::OnPaint()
 	CString strMessage;
 	strMessage=GetLanguageStringACP("CG_IDS_DIDYOUKNOW");
 	rect.left += bmpInfo.bmWidth;
+	// the DC's default font is a bitmap font without CJK glyphs; select the
+	// dialog font (a TrueType font Windows can font-link) before drawing
+	CFont* pOldFont = dc.SelectObject(GetFont());
 	dc.DrawText(strMessage, rect, DT_VCENTER | DT_SINGLELINE);
+	if (pOldFont != NULL) dc.SelectObject(pOldFont);
 
 	
 }
