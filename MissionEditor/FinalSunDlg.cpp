@@ -2331,6 +2331,7 @@ void CFinalSunDlg::OnEditBasicsettings()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_basic);
 		
 	}
 
@@ -2351,6 +2352,7 @@ void CFinalSunDlg::OnEditSingleplayersettings()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_singleplayersettings);
 	}
 
 	if(m_singleplayersettings.m_hWnd!=NULL)
@@ -2393,6 +2395,7 @@ void CFinalSunDlg::OnEditHouses()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_houses);
 	}
 
 	if(m_houses.m_hWnd!=NULL)
@@ -2412,6 +2415,7 @@ void CFinalSunDlg::OnEditAitriggers()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_aitriggertypes);
 	}
 
 	if(m_aitriggertypes.m_hWnd!=NULL)
@@ -2433,6 +2437,7 @@ void CFinalSunDlg::OnEditAitriggerenabling()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_aitriggertypesenable);
 	}
 
 	if(m_aitriggertypesenable.m_hWnd!=NULL)
@@ -2453,6 +2458,7 @@ void CFinalSunDlg::OnEditIniediting()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_all);
 	}
 
 	if(m_all.m_hWnd!=NULL)
@@ -2472,6 +2478,7 @@ void CFinalSunDlg::OnEditLighting()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_lighting);
 	}
 
 	if(m_lighting.m_hWnd!=NULL)
@@ -2492,6 +2499,7 @@ void CFinalSunDlg::OnEditMap()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_map);
 	}
 
 	if(m_map.m_hWnd!=NULL)
@@ -2511,6 +2519,7 @@ void CFinalSunDlg::OnEditScripts()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_Scripttypes);
 	}
 
 	if(m_Scripttypes.m_hWnd!=NULL)
@@ -2530,6 +2539,7 @@ void CFinalSunDlg::OnEditSpecialflags()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_specialflags);
 	}
 
 	if(m_specialflags.m_hWnd!=NULL)
@@ -2549,6 +2559,7 @@ void CFinalSunDlg::OnEditTags()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_tags);
 	}
 
 	if(m_tags.m_hWnd!=NULL)
@@ -2568,6 +2579,7 @@ void CFinalSunDlg::OnEditTaskforces()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_taskforces);
 	}
 
 	if(m_taskforces.m_hWnd!=NULL)
@@ -2587,6 +2599,7 @@ void CFinalSunDlg::OnEditTeams()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_teamtypes);
 	}
 
 	if(m_teamtypes.m_hWnd!=NULL)
@@ -2606,6 +2619,7 @@ void CFinalSunDlg::OnEditTriggers()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_triggers);
 	}
 
 	if(m_triggers.m_hWnd!=NULL)
@@ -2873,6 +2887,7 @@ void CFinalSunDlg::OnEditTriggereditor()
 		{
 			MessageBox(GetLanguageStringACP("Err_CreateErr"), "Error");
 		}
+		TranslateDialogTexts(&m_triggereditor);
 	}
 
 	if(m_triggereditor.m_hWnd!=NULL)
