@@ -4087,8 +4087,9 @@ void CFinalSunDlg::OnMaptoolsBatchspawns()
 	}
 
 	m_view.m_isoview->RedrawWindow(NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-	MessageBox("Placed start waypoints 0 to "+str+" on a grid. Use ""Prepare houses"" "
-		"in the houses dialog to create the matching houses.", "Batch place start waypoints");
+	MessageBox("Placed start waypoints 0 to "+str+" on a grid. "+
+		TranslateStringACP("Use Prepare houses in the houses dialog to create the matching houses."),
+		TranslateStringACP("Batch place start waypoints"));
 }
 
 void CFinalSunDlg::OnMaptoolsToolscripts() 
