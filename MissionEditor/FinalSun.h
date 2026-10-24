@@ -105,7 +105,12 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 	virtual BOOL OnIdle(LONG lCount);
+	virtual int ExitInstance();
 	//}}AFX_VIRTUAL
+
+	// Thread-local WH_CBT hook translating dialog texts via the language
+	// dictionary (see InitInstance / FinalSun.cpp DialogTextHook)
+	static HHOOK m_hDlgTextHook;
 
 // Implementierung
 

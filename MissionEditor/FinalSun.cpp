@@ -141,8 +141,31 @@ CFinalSunApp::CFinalSunApp()
 /////////////////////////////////////////////////////////////////////////////
 // CFinalSunApp initialization
 
+HHOOK CFinalSunApp::m_hDlgTextHook = NULL;
+
+// WH_CBT hook: when a dialog is about to be activated, translate its caption
+// and control texts through the current language dictionary. Texts without a
+// dictionary entry are left as-is, and controls whose text was already set
+// from the language ini (already Chinese) simply match no entry, so the hook
+// is idempotent and safe to run on every activation.
+static LRESULT CALLBACK DialogTextHook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	if (nCode == HCBT_ACTIVATE && wParam != 0)
+	{
+		HWND hwnd = reinterpret_cast<HWND>(wParam);
+		TCHAR cls[16];
+		if (GetClassName(hwnd, cls, 16) > 0 && _tcscmp(cls, _T("#32770")) == 0)
+		{
+			TranslateDialogTexts(CWnd::FromHandle(hwnd));
+		}
+	}
+	return CallNextHookEx(CFinalSunApp::m_hDlgTextHook, nCode, wParam, lParam);
+}
+
 BOOL CFinalSunApp::InitInstance()
 {
+	m_hDlgTextHook = SetWindowsHookEx(WH_CBT, DialogTextHook, m_hInstance, GetCurrentThreadId());
+
 	m_hAccel = LoadAccelerators(this->m_hInstance, MAKEINTRESOURCE(IDR_MAIN));
 
 #ifndef NOSURFACES
@@ -604,4 +627,14 @@ BOOL CFinalSunApp::OnIdle(LONG lCount)
 	((CFinalSunDlg*)m_pMainWnd)->m_view.m_isoview->UpdateWindow();
 	//MessageBox(0,"Idled","",0);
 	return CWinApp::OnIdle(lCount);
+}
+
+int CFinalSunApp::ExitInstance()
+{
+	if (m_hDlgTextHook != NULL)
+	{
+		UnhookWindowsHookEx(m_hDlgTextHook);
+		m_hDlgTextHook = NULL;
+	}
+	return CWinApp::ExitInstance();
 }

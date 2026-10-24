@@ -1440,6 +1440,31 @@ void ListTeamTypes(CComboBox &cb, BOOL bListNone)
 	if(sel>=0) cb.SetCurSel(sel);
 }
 
+void TranslateDialogTexts(CWnd* pWnd)
+{
+	if (pWnd == NULL || pWnd->GetSafeHwnd() == NULL) return;
+
+	CString cap;
+	pWnd->GetWindowText(cap);
+	if (!cap.IsEmpty())
+	{
+		CString t = TranslateStringACP((LPCTSTR)cap);
+		if (t != cap) pWnd->SetWindowText(t);
+	}
+
+	for (CWnd* pChild = pWnd->GetWindow(GW_CHILD); pChild != NULL && pChild->GetSafeHwnd() != NULL; pChild = pChild->GetWindow(GW_HWNDNEXT))
+	{
+		CString s;
+		pChild->GetWindowText(s);
+		if (!s.IsEmpty())
+		{
+			CString t = TranslateStringACP((LPCTSTR)s);
+			if (t != s) pChild->SetWindowText(t);
+		}
+		TranslateDialogTexts(pChild);
+	}
+}
+
 void ListWaypoints(CComboBox &cb)
 {
 	CIniFile& ini=Map->GetIniFile();

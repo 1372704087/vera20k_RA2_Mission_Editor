@@ -135,8 +135,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Create new house"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,129,7,50,14
-    PUSHBUTTON      "取消",IDCANCEL,129,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
     LTEXT           "Choose parent country:",IDC_STATIC,7,7,98,12
     COMBOBOX        IDC_COUNTRY,7,20,112,118,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
@@ -147,8 +147,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Specify file type"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,224,84,50,14
-    PUSHBUTTON      "取消",IDCANCEL,161,84,50,14
+    DEFPUSHBUTTON   "OK",IDOK,224,84,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,161,84,50,14
     LTEXT           "Please specify if you want to save your multiplayer map as *.mmx map or as *.mpr map. While *.mmx maps are the recommended method, as they are fully supported and do not slow down RA2 when loading, they are never transferred automatically to other players!",IDC_STATIC,7,7,267,38
     CONTROL         "Save as *.mmx (no automatic map transfer)",IDC_MMX,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,7,47,267,15
@@ -161,8 +161,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "MMX options"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,211,151,50,14
-    PUSHBUTTON      "取消",IDCANCEL,141,151,50,14
+    DEFPUSHBUTTON   "OK",IDOK,211,151,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,141,151,50,14
     LTEXT           "If description tag does not exist, RA2 will place MISSING: in front of the map name, this does not affect the game!",IDC_STATIC,7,7,254,21
     LTEXT           "Description tag:",IDC_STATIC,7,37,80,12
     EDITTEXT        IDC_DESCRIPTION,90,37,171,15,ES_AUTOHSCROLL
@@ -190,8 +190,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Save options"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,176,165,50,14
-    PUSHBUTTON      "取消",IDCANCEL,117,165,50,14
+    DEFPUSHBUTTON   "OK",IDOK,176,165,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,117,165,50,14
     CONTROL         "Compress map",IDC_COMPRESS,"Button",BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP,201,46,25,8
     CONTROL         "Don't compress map (use this if any problems with the map occur in RA2/TS)",IDC_NOCOMPRESSION,
                     "Button",BS_AUTORADIOBUTTON | BS_MULTILINE | NOT WS_VISIBLE,184,62,42,13
@@ -222,13 +222,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Change Map Size"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,155,173,50,14
-    PUSHBUTTON      "取消",IDCANCEL,97,173,50,14
+    DEFPUSHBUTTON   "OK",IDOK,155,173,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,97,173,50,14
     LTEXT           "Please specify the new width and height of the map. Left and top will automatically be set so that the old area of the map is centered. You can change left and top to modify the left-top position (you may use negative numbers for left/top).",IDC_STATIC,7,7,198,36
-    LTEXT           "宽：",IDC_STATIC,7,54,71,13
+    LTEXT           "Width:",IDC_STATIC,7,54,71,13
     EDITTEXT        IDC_WIDTH,86,52,62,15,ES_AUTOHSCROLL
     LTEXT           "Note: If there are any units, buildings, waypoints etc. outside of the new map area, they will be deleted.",IDC_STATIC,7,132,198,19
-    LTEXT           "高：",IDC_STATIC,7,72,71,13
+    LTEXT           "Height:",IDC_STATIC,7,72,71,13
     EDITTEXT        IDC_HEIGHT,86,70,62,15,ES_AUTOHSCROLL
     LTEXT           "Left:",IDC_STATIC,7,90,71,13
     EDITTEXT        IDC_LEFT,86,88,62,15,ES_AUTOHSCROLL
@@ -242,8 +242,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Enable AI Trigger"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,165,7,50,14
-    PUSHBUTTON      "取消",IDCANCEL,165,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,165,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,165,24,50,14
     LTEXT           "Select AI Trigger that should be enabled:",IDC_STATIC,7,7,136,21
     LISTBOX         IDC_AITRIGGERS,7,48,208,42,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
@@ -288,22 +288,22 @@ IDD_TSOPTIONS$(RA2_MODE) DIALOGEX 0, 0, 197, 183
 IDD_TSOPTIONS DIALOGEX 0, 0, 197, 183
 #endif
 STYLE DS_SETFONT | DS_MODALFRAME | DS_NOFAILCREATE | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "选项"
+CAPTION "Options"
 FONT 8, "Tahoma", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,140,159,50,14
-    PUSHBUTTON      "取消",IDCANCEL,85,159,50,14
-    LTEXT           "红色警戒2主程序（请确认路径正确）",IDC_STATIC,5,5,130,20
+    DEFPUSHBUTTON   "OK",IDOK,140,159,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,85,159,50,14
+    LTEXT           "Red Alert 2 EXE (make sure its in the correct path)",IDC_STATIC,5,5,130,20
     EDITTEXT        IDC_EDIT1,5,25,130,15,ES_AUTOHSCROLL
-    PUSHBUTTON      "浏览",IDC_CHOOSE,140,25,50,15
-    LTEXT           "语言 / Language:",IDC_STATIC,7,51,128,11
+    PUSHBUTTON      "Browse",IDC_CHOOSE,140,25,50,15
+    LTEXT           "Language / Sprache:",IDC_STATIC,7,51,128,11
     COMBOBOX        IDC_LANGUAGE,7,63,183,94,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "游戏支持设置",IDC_STATIC,7,81,183,71
-    CONTROL         "支持任务扩展包和模组（推荐）",IDC_RULESLIKETS,
+    GROUPBOX        "Support settings",IDC_STATIC,7,81,183,71
+    CONTROL         "Support mission disks and mods (recommended)",IDC_RULESLIKETS,
                     "Button",BS_AUTORADIOBUTTON | BS_MULTILINE | WS_GROUP,14,92,170,16
-    CONTROL         "仅支持原版红色警戒2",IDC_ONLYORIGINAL,
+    CONTROL         "Only support original Red Alert 2",IDC_ONLYORIGINAL,
                     "Button",BS_AUTORADIOBUTTON | BS_MULTILINE,14,108,168,16
-    CONTROL         "优先使用 FinalAlert 2 的场景 INI 文件",IDC_PREFER_LOCAL_THEATER_FILES,
+    CONTROL         "Prefer FinalAlert 2 theater INI files",IDC_PREFER_LOCAL_THEATER_FILES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,131,164,12
 END
 #endif
@@ -340,13 +340,13 @@ BEGIN
     EDITTEXT        IDC__SIZEX,11,67,90,12,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "The ""useable"" size of the map. This specifies where you can place buildings etc. Has the following format: Left,Top,Right,Bottom",IDC_LUSEABLE,10,110,275,20
     EDITTEXT        IDC_USESIZE,10,131,90,12,ES_AUTOHSCROLL
-    LTEXT           "场景：",IDC_LTHEATER,12,159,284,11
+    LTEXT           "Theater:",IDC_LTHEATER,12,159,284,11
     COMBOBOX        IDC_THEATER,10,170,90,45,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Change",IDC_CHANGELOCAL,111,131,70,13
     PUSHBUTTON      "Change",IDC_CHANGE,212,67,70,13
-    LTEXT           "宽：",IDC_STATIC,12,56,93,9
+    LTEXT           "Width:",IDC_STATIC,12,56,93,9
     EDITTEXT        IDC__SIZEY,106,67,90,12,ES_AUTOHSCROLL | ES_READONLY
-    LTEXT           "高：",IDC_STATIC,107,56,93,9
+    LTEXT           "Height:",IDC_STATIC,107,56,93,9
 END
 
 IDD_INPUTBOX DIALOG 0, 0, 214, 70
@@ -354,8 +354,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,160,5,50,14
-    PUSHBUTTON      "取消",IDCANCEL,160,25,50,14
+    DEFPUSHBUTTON   "OK",IDOK,160,5,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,160,25,50,14
     LTEXT           "Static",IDC_SENTENCE,5,5,150,35
     EDITTEXT        IDC_VAL,5,50,205,12,ES_AUTOHSCROLL
 END
@@ -365,8 +365,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Insert INI file section"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,170,5,50,14
-    PUSHBUTTON      "取消",IDCANCEL,170,25,50,14
+    DEFPUSHBUTTON   "OK",IDOK,170,5,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,170,25,50,14
     LTEXT           "Choose the sections you want to import in the map. Be careful! If you import a section that already exists, keys of the already existing section may be overwritten!",IDC_STATIC,5,5,155,35
     LISTBOX         IDC_AVAILABLE,5,75,215,55,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Available sections:",IDC_STATIC,5,65,100,10
@@ -446,8 +446,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "Infantry options"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,175,121,50,14
-    PUSHBUTTON      "取消",IDCANCEL,117,121,50,14
+    DEFPUSHBUTTON   "OK",IDOK,175,121,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,117,121,50,14
     LTEXT           "House:",IDC_LHOUSE,7,6,33,11
     COMBOBOX        IDC_HOUSE,47,6,65,45,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Strength:",IDC_LSTRENGTH,7,24,29,10
@@ -514,8 +514,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "Aircraft Options"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,170,110,50,14
-    PUSHBUTTON      "取消",IDCANCEL,110,110,50,14
+    DEFPUSHBUTTON   "OK",IDOK,170,110,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,110,110,50,14
     CONTROL         "House:",IDC_LHOUSE,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,5,7,33,11
     COMBOBOX        IDC_HOUSE,45,7,65,45,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Strength:",IDC_LSTRENGTH,5,25,29,10
@@ -542,8 +542,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_CAPTION | WS_SYSMENU
 CAPTION "Building options"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,190,170,50,14
-    PUSHBUTTON      "取消",IDCANCEL,131,170,50,14
+    DEFPUSHBUTTON   "OK",IDOK,190,170,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,131,170,50,14
     LTEXT           "House:",IDC_LHOUSE,7,41,33,11
     COMBOBOX        IDC_HOUSE,47,41,65,45,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Strength:",IDC_LSTRENGTH,7,57,29,10
@@ -581,8 +581,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "Create waypoint"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,129,72,50,14
-    PUSHBUTTON      "取消",IDCANCEL,70,72,50,14
+    DEFPUSHBUTTON   "OK",IDOK,129,72,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,72,50,14
     LTEXT           "Enter the waypoint number (note that it may already exist and be overwritten!). Or use ""Get free number"".",IDC_DESC,7,7,172,27
     EDITTEXT        IDC_ID,7,45,67,16,ES_AUTOHSCROLL
     LTEXT           "ID:",IDC_LID,7,34,78,10
@@ -594,8 +594,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cell-Tag"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,155,56,50,14
-    PUSHBUTTON      "取消",IDCANCEL,95,56,50,14
+    DEFPUSHBUTTON   "OK",IDOK,155,56,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,95,56,50,14
     LTEXT           "Tag:",IDC_LTAG,7,29,82,8
     COMBOBOX        IDC_TAG,7,37,198,114,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Associate a tag with a specific cell.",IDC_LDESC,7,7,198,19
@@ -759,9 +759,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMEN
 CAPTION "New map assistant"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,191,205,50,14
-    PUSHBUTTON      "取消",IDCANCEL,134,205,50,14
-    PUSHBUTTON      "浏览",IDC_BROWSE,189,106,44,12
+    DEFPUSHBUTTON   "OK",IDOK,191,205,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,134,205,50,14
+    PUSHBUTTON      "Browse",IDC_BROWSE,189,106,44,12
     GROUPBOX        "Import options",IDC_LIMPORTOPTIONS,7,93,234,64
     CONTROL         "Import Trees",IDC_IMPORTTREES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,125,91,12
     CONTROL         "Import Overlay",IDC_IMPORTOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,103,13
@@ -776,10 +776,10 @@ BEGIN
     CONTROL         "Create new map",IDC_NEW,"Button",BS_AUTORADIOBUTTON,7,8,234,15
     GROUPBOX        "New map options",IDC_STATIC,7,21,234,51
     EDITTEXT        IDC_WIDTH,51,31,51,14,ES_AUTOHSCROLL
-    LTEXT           "宽：",IDC_STATIC,13,31,33,14
+    LTEXT           "Width:",IDC_STATIC,13,31,33,14
     EDITTEXT        IDC_HEIGHT,178,31,51,14,ES_AUTOHSCROLL
-    LTEXT           "高：",IDC_STATIC,130,31,41,14
-    LTEXT           "场景：",IDC_STATIC,13,49,38,12
+    LTEXT           "Height:",IDC_STATIC,130,31,41,14
+    LTEXT           "Theater:",IDC_STATIC,13,49,38,12
     COMBOBOX        IDC_THEATER,51,49,68,71,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Ground height:",IDC_STATIC,130,50,47,16
     COMBOBOX        IDC_GROUNDHEIGHT,178,50,52,71,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -873,8 +873,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "Map-Validator"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,383,205,50,14
-    PUSHBUTTON      "取消",IDCANCEL,322,205,50,14
+    DEFPUSHBUTTON   "OK",IDOK,383,205,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,322,205,50,14
     LTEXT           "These possible problems were found:",IDC_LPROBLEMSFOUND,7,7,225,14
     CONTROL         "List1",IDC_MAPPROBLEMS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,6,21,427,144
 END
@@ -920,9 +920,9 @@ IDD_TERRAINBAR DIALOG 0, 0, 387, 29
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "地形/地面：",IDC_STATIC,7,7,32,20
+    LTEXT           "Terrain / Ground:",IDC_STATIC,7,7,32,20
     COMBOBOX        IDC_TILESET,42,7,141,169,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "覆盖物/特殊：",IDC_STATIC,204,7,32,20
+    LTEXT           "Overlay && Special:",IDC_STATIC,204,7,32,20
     COMBOBOX        IDC_OVERLAY,239,7,141,169,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
@@ -931,7 +931,7 @@ STYLE DS_SETFONT | WS_CHILD
 EXSTYLE WS_EX_TRANSPARENT
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    LTEXT           "笔刷大小：",IDC_STATIC,7,3,46,11,SS_CENTERIMAGE,WS_EX_TRANSPARENT
+    LTEXT           "Brush size:",IDC_STATIC,7,3,46,11,SS_CENTERIMAGE,WS_EX_TRANSPARENT
     COMBOBOX        IDC_BRUSHSIZE,58,1,51,79,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
@@ -1049,7 +1049,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Info"
 FONT 8, "Tahoma", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,292,8,50,14
+    DEFPUSHBUTTON   "OK",IDOK,292,8,50,14
     LTEXT           "© 1999-2024 ELECTRONIC ARTS INC.   ALL RIGHTS RESERVED\nWestwood Studios(tm) is an Electronic Arts(tm) brand.",IDC_STATIC,7,189,334,18
     LTEXT           "© 1999-2024 Electronic Arts Inc. Westwood Studios and Electronic Arts are trademarks or registered trademarks of Electronic Arts Inc. in the U.S. and/or other countries. All rights reserved.",IDC_STATIC,7,214,335,28
     EDITTEXT        IDC_LICENSE_AND_COPYRIGHT,6,29,336,148,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
@@ -1149,8 +1149,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMEN
 CAPTION "Create new map - Step 1"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
     LTEXT           "Please select if you want to create a new singleplayer map or multiplayer map. Multiplayer maps are maps used in both skirmish and multiplayer games.",IDC_STATIC,7,7,208,33
     CONTROL         "Singleplayer map (only for experienced users that can handle advanced mode)",IDC_SINGLE,
                     "Button",BS_AUTORADIOBUTTON | BS_MULTILINE | WS_GROUP,7,55,208,20
@@ -1163,8 +1163,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMEN
 CAPTION "Create new map - Step 4"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
     CONTROL         "Prepare standard houses (recommended)",IDC_PREPAREHOUSES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,39,159,13
     COMBOBOX        IDC_HOUSE,87,63,115,99,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -1176,30 +1176,30 @@ END
 
 IDD_NEWMAPCREATENEW DIALOG 0, 0, 222, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "新建地图 - 第 3 步"
+CAPTION "Create new map - Step 3"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
-    LTEXT           "请在此选择地图尺寸、场景和初始高度。为获得最佳效果，尺寸建议不超过 100x100。",IDC_STATIC,7,7,208,32
-    LTEXT           "宽：",IDC_STATIC,7,39,35,11
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
+    LTEXT           "Please select size, theater and starting height here. The size should be below 100x100 for best results.",IDC_STATIC,7,7,208,32
+    LTEXT           "Width:",IDC_STATIC,7,39,35,11
     EDITTEXT        IDC_WIDTH,130,39,85,13,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "高：",IDC_STATIC,7,55,35,11
+    LTEXT           "Height:",IDC_STATIC,7,55,35,11
     EDITTEXT        IDC_HEIGHT,130,55,85,13,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "场景：",IDC_STATIC,7,71,53,12
+    LTEXT           "Theater:",IDC_STATIC,7,71,53,12
     COMBOBOX        IDC_THEATER,130,71,85,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "初始高度：",IDC_STATIC,7,87,64,12
+    LTEXT           "Starting height:",IDC_STATIC,7,87,64,12
     COMBOBOX        IDC_STARTINGHEIGHT,130,87,85,93,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_NEWMAPIMPORT DIALOG 0, 0, 222, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "新建地图 - 第 3 步"
+CAPTION "Create new map - Step 3"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
-    PUSHBUTTON      "浏览",IDC_BROWSE,155,51,60,12
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
+    PUSHBUTTON      "Browse",IDC_BROWSE,155,51,60,12
     CONTROL         "Import Trees",IDC_IMPORTTREES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,69,91,12
     CONTROL         "Import Overlay",IDC_IMPORTOVERLAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,82,103,13
     CONTROL         "Import Units/Buildings",IDC_IMPORTUNITS,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,120,66,94,19
@@ -1218,19 +1218,19 @@ END
 
 IDD_NEWMAPBITMAP DIALOG 0, 0, 222, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "新建地图 - 第 3 步"
+CAPTION "Create new map - Step 3"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
     LTEXT           "Please select size, theater and starting height here. The size should be below 150x150.",IDC_STATIC,7,7,208,32
-    LTEXT           "宽：",IDC_STATIC,7,39,35,11
+    LTEXT           "Width:",IDC_STATIC,7,39,35,11
     EDITTEXT        IDC_WIDTH,130,39,85,13,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "高：",IDC_STATIC,7,55,35,11
+    LTEXT           "Height:",IDC_STATIC,7,55,35,11
     EDITTEXT        IDC_HEIGHT,130,55,85,13,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "场景：",IDC_STATIC,7,71,53,12
+    LTEXT           "Theater:",IDC_STATIC,7,71,53,12
     COMBOBOX        IDC_THEATER,130,71,85,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "初始高度：",IDC_STATIC,7,87,64,12
+    LTEXT           "Starting height:",IDC_STATIC,7,87,64,12
     COMBOBOX        IDC_STARTINGHEIGHT,130,87,85,93,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
@@ -1239,7 +1239,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMEN
 CAPTION "Progress"
 FONT 8, "MS Sans Serif"
 BEGIN
-    PUSHBUTTON      "取消",IDCANCEL,67,68,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,67,68,50,14
     LTEXT           "Progress:",IDC_LABEL,7,7,194,22
     CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,7,47,194,13
     LTEXT           "Progress: ",IDC_PROGLABEL,7,31,194,13
@@ -1251,7 +1251,7 @@ CAPTION "Auto Update"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "Download",IDOK,223,156,60,14
-    PUSHBUTTON      "取消",IDCANCEL,152,156,60,14
+    PUSHBUTTON      "Cancel",IDCANCEL,152,156,60,14
     LTEXT           "Updates available:",IDC_STATIC,7,7,184,16
     LISTBOX         IDC_UPDATELIST,7,23,276,36,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Description:",IDC_STATIC,7,66,80,14
@@ -1267,16 +1267,16 @@ IDD_NEWMAPCREATE$(RA2_MODE) DIALOG 0, 0, 222, 129
 IDD_NEWMAPCREATE DIALOG 0, 0, 222, 129
 #endif
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "新建地图 - 第 2 步"
+CAPTION "Create new map - Step 2"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "下一步",IDOK,165,108,50,14
-    PUSHBUTTON      "取消",IDCANCEL,7,108,50,14
-    LTEXT           "请选择是从零新建一张地图，还是导入已有地图（注意：无法导入红警2随机地图生成器创建的地图）",IDC_STATIC,7,7,208,37
-    CONTROL         "从零新建地图",IDC_CREATE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,55,208,11
-    CONTROL         "导入已有地图或位图（BMP）",IDC_IMPORT,
+    DEFPUSHBUTTON   "Next",IDOK,165,108,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,108,50,14
+    LTEXT           "Please select here if you want to create a completely new map from scratch or if you want to import an already existing map (Note: You cannot import maps created by the random map generator of RA2)",IDC_STATIC,7,7,208,37
+    CONTROL         "Create a completely new map",IDC_CREATE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,7,55,208,11
+    CONTROL         "Import an existing map or bitmap (BMP)",IDC_IMPORT,
                     "Button",BS_AUTORADIOBUTTON,7,67,208,11
-    CONTROL         "激活 AI 触发（AI 表现更好）",IDC_AITRIGGERS,
+    CONTROL         "Activate AI Triggers (results in better AI)",IDC_AITRIGGERS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,208,14
 END
 #endif
@@ -1300,8 +1300,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "Unit Options"
 FONT 8, "Tahoma"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,170,124,50,14
-    PUSHBUTTON      "取消",IDCANCEL,110,124,50,14
+    DEFPUSHBUTTON   "OK",IDOK,170,124,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,110,124,50,14
     LTEXT           "House:",IDC_LHOUSE,5,8,33,11
     COMBOBOX        IDC_HOUSE,45,8,65,45,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Strength:",IDC_LSTRENGTH,5,26,29,10
@@ -1332,8 +1332,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Random Tree Placing"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,136,7,50,14
-    PUSHBUTTON      "取消",IDCANCEL,136,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,136,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,136,24,50,14
     LTEXT           "Please select the trees that shall be placed",IDC_STATIC,7,7,104,22
     LISTBOX         IDC_AVAIL,7,58,73,77,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Available:",IDC_STATIC,7,45,86,11
@@ -1350,7 +1350,7 @@ CAPTION "Search Waypoint"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "Search",IDOK,129,7,50,14
-    PUSHBUTTON      "取消",IDCANCEL,129,24,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
     LTEXT           "Waypoints:",IDC_STATIC,7,7,96,12
     LISTBOX         IDC_WAYPOINTS,7,21,97,67,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
@@ -1375,8 +1375,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Please select"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,181,42,50,14
-    PUSHBUTTON      "取消",IDCANCEL,124,42,50,14,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "OK",IDOK,181,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,124,42,50,14,NOT WS_VISIBLE
     LTEXT           "CAPTION",IDC_CAPTION,7,7,224,12
     COMBOBOX        IDC_COMBO1,7,23,224,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END

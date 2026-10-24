@@ -81,6 +81,10 @@ BOOL DoesFileExist(LPCSTR szFile);
 void ListHouses(CComboBox &cb, BOOL bNumbers=FALSE, BOOL bCountries=FALSE, BOOL bPlayers=FALSE);
 void ListTeamTypes(CComboBox &cb, BOOL bListNone=FALSE);
 void ListWaypoints(CComboBox &cb);
+// Translates the caption of pWnd and of all child controls through the
+// current language dictionary ([<language>-Translations]); texts without a
+// dictionary entry are left unchanged, so it is safe to call repeatedly.
+void TranslateDialogTexts(CWnd* pWnd);
 void ListTargets(CComboBox& cb);
 void ListTags(CComboBox& cb, BOOL bListNone);
 void ListMovies(CComboBox& cb, BOOL bListNone, BOOL bListParam=FALSE);

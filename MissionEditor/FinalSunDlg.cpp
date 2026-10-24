@@ -291,7 +291,10 @@ BOOL CFinalSunDlg::OnInitDialog()
 	m_clifftoolbar.SetBarStyle(m_terraintoolbar.GetBarStyle());
 
 	success = success && m_settingsbar.Create(this, IDD_TOOLSETTINGS, CBRS_TOP, 6000);
-	
+	// the tool settings bar is a non-modal dialog bar; translate its label
+	// once here (the dialog-text hook only covers modal dialogs)
+	TranslateDialogTexts(&m_settingsbar);
+
 	REBARBANDINFO rbi = { 0 };
 	rbi.cbSize= sizeof(REBARBANDINFO);
 	rbi.fMask= RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_STYLE | RBBIM_TEXT /*| RBBIM_SIZE*/ | RBBIM_IDEALSIZE;

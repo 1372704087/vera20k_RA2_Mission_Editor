@@ -22,6 +22,7 @@
 //
 
 #include "stdafx.h"
+#include "functions.h"
 #include "finalsun.h"
 #include "TileSetBrowserFrame.h"
 #include "resource.h"
@@ -65,6 +66,9 @@ void CTileSetBrowserFrame::PostNcDestroy()
 BOOL CTileSetBrowserFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	((CDialogBar*)&m_bar)->Create(this, IDD_TERRAINBAR, CBRS_TOP, 5);
+	// dialog bar labels are .rc strings with no runtime translation; run
+	// them through the language dictionary once (non-modal, no hook)
+	TranslateDialogTexts(&m_bar);
 	m_bar.ShowWindow(SW_SHOW);
 	CRect r;
 	GetClientRect(r);
