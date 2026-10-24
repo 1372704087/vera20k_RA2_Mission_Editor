@@ -328,11 +328,7 @@ void ShowOptionsDialog()
 	std::string iniFile="";	
 	CIniFile optini;
 	iniFile=u8AppDataPath;
-#ifndef RA2_MODE
-	iniFile+="\\FinalSun.ini";
-#else
 	iniFile+="\\FinalAlert.ini";
-#endif
 	optini.LoadFile(iniFile);
 	CTSOptions opt;
 	opt.m_TSEXE=theApp.m_Options.TSExe;
@@ -434,14 +430,10 @@ CString GetLanguageStringACP(CString name)
 	if(language.sections[theApp.m_Options.LanguageName+"-Strings"].values.find(name)==language.sections[theApp.m_Options.LanguageName+"-Strings"].values.end())
 	{
 		CString s=language.sections["English-Strings"].values[name];	
-#ifndef RA2_MODE
-		s=TranslateStringVariables(9, s, "FinalSun");
-#else
 #ifdef YR_MODE
 		s=TranslateStringVariables(9, s, "FinalAlert 2: Yuri's Revenge");
 #else
 		s=TranslateStringVariables(9, s, "FinalAlert 2");
-#endif
 #endif
 		return ToACP(s);
 	}
@@ -449,14 +441,10 @@ CString GetLanguageStringACP(CString name)
 	CString s;
 	s= language.sections[theApp.m_Options.LanguageName+"-Strings"].values[name];
 
-#ifndef RA2_MODE
-	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalSun");
-#else
 #ifdef YR_MODE
 	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
 #else
 	if(s.Find("%9")>=0) s=TranslateStringVariables(9,s,"FinalAlert 2");
-#endif
 #endif
 
 	
@@ -503,37 +491,25 @@ CString TranslateStringACP(CString u8EnglishString)
 		if(language.sections[seceng].FindName(u8EnglishString)>=0)
 		{
 			CString s=language.sections[seceng].values[u8EnglishString];
-#ifndef RA2_MODE
-			s=TranslateStringVariables(9, s, "FinalSun");
-#else
 #ifdef YR_MODE
 			s=TranslateStringVariables(9, s, "FinalAlert 2: Yuri's Revenge");
 #else			
 			s=TranslateStringVariables(9, s, "FinalAlert 2");
 #endif
-#endif
 			return ToACP(s);
 		}
-#ifndef RA2_MODE
-		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalSun"));
-#else
 #ifdef YR_MODE
 		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2: Yuri's Revenge"));
 #else
 		return ToACP(TranslateStringVariables(9,u8EnglishString,"FinalAlert 2"));
 #endif
-#endif
 	}
 
 	CString s=language.sections[sec].values[u8EnglishString];
-#ifndef RA2_MODE
-	s=TranslateStringVariables(9,s,"FinalSun");
-#else
 #ifdef YR_MODE
 	s=TranslateStringVariables(9,s,"FinalAlert 2: Yuri's Revenge");
 #else
 	s=TranslateStringVariables(9,s,"FinalAlert 2");
-#endif
 #endif
 
 	return ToACP(s);
@@ -974,20 +950,6 @@ void ListTutorial(CComboBox& cb)
 {
 	while(cb.DeleteString(0)!=CB_ERR);
 
-#ifndef RA2_MODE
-	int i;
-	for(i=0;i<tutorial.sections["Tutorial"].values.size();i++)
-	{
-		CString s;
-		s=*tutorial.sections["Tutorial"].GetValueName(i);
-
-		s+=" ";
-
-		s+=*tutorial.sections["Tutorial"].GetValue(i);
-
-		cb.AddString(s);
-	}
-#else
 	
 	typedef map<CString, XCString>::iterator it;
 	it _it=AllStrings.begin();
@@ -1009,7 +971,6 @@ void ListTutorial(CComboBox& cb)
 		_it++;
 	}
 
-#endif
 }
 
 void ListTriggers(CComboBox& cb)
@@ -1521,11 +1482,7 @@ void ListTargets(CComboBox &cb)
 
 CString GetHouseSectionName(CString lpHouse)
 {
-#ifndef RA2_MODE
-	return lpHouse;
-#else
 	return lpHouse+" House";
-#endif
 
 }
 

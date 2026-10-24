@@ -174,81 +174,6 @@ void CLoading::Load()
 	UpdateWindow();
 	LoadTSIni("Rules.ini", &rules, FALSE);
 
-#ifdef TS_MODE
-	if(bUseFirestorm) 
-	{
-		// very special case, the types list don´t have any order according to the original rules!
-		CIniFile fstorm;
-		LoadTSIni("firestrm.ini", &fstorm, TRUE);
-
-		int i;
-		CString cuSection;
-		cuSection="InfantryTypes";
-		for(i=0;i<fstorm.sections[cuSection].values.size();i++)
-		{
-			// we simply add a FS to the index
-			char c[50];
-			itoa(i, c, 10);
-			strcat(c, "FS");
-			rules.sections[cuSection].values[c]=*fstorm.sections[cuSection].GetValue(i);
-			rules.sections[cuSection].value_orig_pos[c]=rules.sections[cuSection].values.size()-1;
-		}
-		cuSection="VehicleTypes";
-		for(i=0;i<fstorm.sections[cuSection].values.size();i++)
-		{
-			// we simply add a FS to the index
-			char c[50];
-			itoa(i, c, 10);
-			strcat(c, "FS");
-			rules.sections[cuSection].values[c]=*fstorm.sections[cuSection].GetValue(i);
-			rules.sections[cuSection].value_orig_pos[c]=rules.sections[cuSection].values.size()-1;
-		}
-		cuSection="AircraftTypes";
-		for(i=0;i<fstorm.sections[cuSection].values.size();i++)
-		{
-			// we simply add a FS to the index
-			char c[50];
-			itoa(i, c, 10);
-			strcat(c, "FS");
-			rules.sections[cuSection].values[c]=*fstorm.sections[cuSection].GetValue(i);
-			rules.sections[cuSection].value_orig_pos[c]=rules.sections[cuSection].values.size()-1;
-		}
-		cuSection="BuildingTypes";
-		for(i=0;i<fstorm.sections[cuSection].values.size();i++)
-		{
-			// we simply add a FS to the index
-			char c[50];
-			itoa(i, c, 10);
-			strcat(c, "FS");
-			rules.sections[cuSection].values[c]=*fstorm.sections[cuSection].GetValue(i);
-			rules.sections[cuSection].value_orig_pos[c]=rules.sections[cuSection].values.size()-1;
-		}
-		cuSection="SuperWeaponTypes";
-		for(i=0;i<fstorm.sections[cuSection].values.size();i++)
-		{
-			// we simply add a FS to the index
-			char c[50];
-			itoa(i, c, 10);
-			strcat(c, "FS");
-			rules.sections[cuSection].values[c]=*fstorm.sections[cuSection].GetValue(i);
-			rules.sections[cuSection].value_orig_pos[c]=rules.sections[cuSection].values.size()-1;
-		}
-
-		for(i=0;i<fstorm.sections.size(); i++)
-		{
-			cuSection=*fstorm.GetSectionName(i);
-			if(cuSection!="SuperWeaponTypes" && cuSection!="InfantryTypes" && cuSection!="VehicleTypes" && cuSection!="AircraftTypes" && cuSection!="BuildingTypes")
-			{
-				int e;
-				for(e=0;e<fstorm.sections[cuSection].values.size();e++)
-				{
-					CString cuValue=*fstorm.sections[cuSection].GetValueName(e);
-					rules.sections[cuSection].values[cuValue]=*fstorm.sections[cuSection].GetValue(e);
-				}
-			}
-		}
-	}
-#else
 	if(bUseFirestorm && yuri_mode) // MW actually this is Yuri's Revenge
 	{
 		CIniFile rulesmd;
@@ -258,7 +183,6 @@ void CLoading::Load()
 			rules=rulesmd;
 		}
 	}
-#endif
 
 	m_progress.SetPos(2);
 	//rules.DeleteLeadingSpaces(TRUE, TRUE);
@@ -275,48 +199,6 @@ void CLoading::Load()
 	m_progress.SetPos(1);
 	UpdateWindow();
 	LoadTSIni("Art.ini", &art, FALSE);
-#ifdef TS_MODE
-	if(bUseFirestorm) // LoadTSIni("ArtFs.ini", &art, TRUE);
-	{
-		CIniFile artfs;
-		LoadTSIni("artfs.ini", &artfs, TRUE);
-
-		// MW April 8th: bugfix... we erased Movies even if there was no new data!!!
-		if(artfs.sections.size())
-		{
-
-			int i;
-			CString cuSection;
-			cuSection="Movies";
-			art.sections.erase(cuSection);
-			/*for(i=0;i<artfs.sections[cuSection].values.size();i++)
-			{
-				// we simply add a FS to the index
-				char c[50];
-				itoa(i, c, 10);
-				strcat(c, "FS");
-				art.sections[cuSection].values[c]=*artfs.sections[cuSection].GetValue(i);
-				art.sections[cuSection].value_orig_pos[c]=art.sections[cuSection].values.size()-1;
-			}*/
-
-			for(i=0;i<artfs.sections.size(); i++)
-			{
-				cuSection=*artfs.GetSectionName(i);
-				//if(cuSection!="Movies")
-				{
-					int e;
-					for(e=0;e<artfs.sections[cuSection].values.size();e++)
-					{
-						CString cuValue=*artfs.sections[cuSection].GetValueName(e);
-						art.sections[cuSection].values[cuValue]=*artfs.sections[cuSection].GetValue(e);
-						if(cuSection=="Movies") art.sections[cuSection].value_orig_pos[cuValue]=artfs.sections[cuSection].GetValueOrigPos(e);
-					}
-				}
-			}
-		}
-
-	}
-#else
 	if(bUseFirestorm && yuri_mode) // Yuri's Revenge
 	{
 		CIniFile artmd;
@@ -327,7 +209,6 @@ void CLoading::Load()
 			art=artmd;
 		}
 	}
-#endif
 
 	
 
@@ -392,11 +273,7 @@ void CLoading::Load()
 	m_progress.SetPos(1);
 	UpdateWindow();
 	LoadTSIni("Ai.ini", &ai, FALSE);
-#ifdef TS_MODE
-	if(bUseFirestorm) LoadTSIni("aifs.ini", &ai, TRUE);;
-#else
 	if(bUseFirestorm && yuri_mode) LoadTSIni("aimd.ini", &ai, TRUE); // YR
-#endif
 	m_progress.SetPos(2);
 	UpdateWindow();
 
@@ -693,9 +570,6 @@ BOOL CLoading::OnInitDialog()
 
 	CString version;
 	version.LoadString(IDS_VERSIONTEXT);
-#ifdef TS_MODE
-	version.LoadString(IDS_VERSIONTEXTTS);
-#endif
 
 	m_Version.SetWindowText(version);
 	
@@ -1070,11 +944,7 @@ __forceinline void Blit_PalD(BYTE* dst, RECT blrect, const BYTE* src, RECT srcRe
 	
 }
 
-#ifdef TS_MODE
 const Vec3f lightDirection = Vec3f(1.0f, 0.0f, -1.0f).normalize();
-#else
-const Vec3f lightDirection = Vec3f(1.0f, 0.0f, -1.0f).normalize();
-#endif
 
 
 HTSPALETTE CLoading::GetIsoPalette(char theat)
@@ -5211,9 +5081,6 @@ void CLoading::LoadOverlayGraphic(LPCTSTR lpOvrlName_, int iOvrlNum)
 	if(isveinhole==TRUE || isveins==TRUE || istiberium==TRUE)
 	{
 		hPalette=m_hPalTemp;
-#ifndef RA2_MODE
-		hPalette=m_hPalUnitTemp;
-#endif
 	}
 
 	hPalette = forcedPalette ? forcedPalette : hPalette;
@@ -5243,53 +5110,9 @@ void CLoading::LoadOverlayGraphic(LPCTSTR lpOvrlName_, int iOvrlNum)
 			BOOL bIsBlueTib=FALSE;
 			BOOL bIsGreenTib=FALSE;
 			RGBTRIPLE rgbOld[16], rgbNew;
-	#ifndef RA2_MODE
-			if(istiberium)
-			{
-				if(lpOvrlName[4]=='_') // other than green!
-					bIsBlueTib=TRUE;
-				else
-					bIsGreenTib=TRUE;
-
-				
-
-				int i;
-				for(i=0;i<16;i++)
-				{
-					if(bIsGreenTib)
-					{
-						rgbNew.rgbtBlue=0;
-						if(i!=0)
-							rgbNew.rgbtGreen=255-i*16+1;
-						else
-							rgbNew.rgbtGreen=255;
-						rgbNew.rgbtRed=0;
-					}
-					else if(bIsBlueTib)
-					{
-						if(i!=0)
-							rgbNew.rgbtBlue=255-i*16+1;
-						else
-							rgbNew.rgbtBlue=255;
-						rgbNew.rgbtGreen=0;
-						rgbNew.rgbtRed=0; // change green/blue (not RGB but BGR)
-					}
-
-					int rb=rgbNew.rgbtBlue;
-					int rr=rgbNew.rgbtRed;
-
-					FSunPackLib::SetTSPaletteEntry(hPalette, 0x10+i, &rgbNew, &rgbOld[i]);
-				}
-			}
-	#endif
 
 			FSunPackLib::LoadSHPImage(0, maxPics, lpT);
 
-	#ifndef RA2_MODE
-			if(istiberium)
-				for(i=0;i<16;i++)
-					FSunPackLib::SetTSPaletteEntry(hPalette, 0x10+i, &rgbOld[i], NULL);
-	#endif
 
 			for(i=0; i<maxPics; i++)
 			{
@@ -5498,9 +5321,6 @@ void CLoading::LoadOverlayGraphic(LPCTSTR lpOvrlName_, int iOvrlNum)
 	if(isveinhole==TRUE || isveins==TRUE || istiberium==TRUE)
 	{
 		hPalette=m_hPalTemp;
-#ifndef RA2_MODE
-		hPalette=m_hPalUnitTemp;
-#endif
 	}
 
 	if(hMix!=NULL)
@@ -5526,50 +5346,9 @@ void CLoading::LoadOverlayGraphic(LPCTSTR lpOvrlName_, int iOvrlNum)
 			BOOL bIsBlueTib=FALSE;
 			BOOL bIsGreenTib=FALSE;
 			RGBTRIPLE rgbOld[16], rgbNew;
-	#ifndef RA2_MODE
-			if(istiberium)
-			{
-				if(lpOvrlName[4]=='_') // other than green!
-					bIsBlueTib=TRUE;
-				else
-					bIsGreenTib=TRUE;
-
-				
-
-				int i;
-				for(i=0;i<16;i++)
-				{
-					if(bIsGreenTib)
-					{
-						rgbNew.rgbtBlue=0;
-						if(i!=0)
-							rgbNew.rgbtGreen=255-i*16+1;
-						else
-							rgbNew.rgbtGreen=255;
-						rgbNew.rgbtRed=0;
-					}
-					else if(bIsBlueTib)
-					{
-						if(i!=0)
-							rgbNew.rgbtBlue=255-i*16+1;
-						else
-							rgbNew.rgbtBlue=255;
-						rgbNew.rgbtGreen=0;
-						rgbNew.rgbtRed=0;
-					}
-
-					FSunPackLib::SetTSPaletteEntry(hPalette, 0x10+i, &rgbNew, &rgbOld[i]);
-				}
-			}
-	#endif
 
 			FSunPackLib::LoadSHPImageInSurface(v.dd, hPalette, 0, maxPics, lpT);
 
-	#ifndef RA2_MODE
-			if(istiberium)
-				for(i=0;i<16;i++)
-					FSunPackLib::SetTSPaletteEntry(hPalette, 0x10+i, &rgbOld[i], NULL);
-	#endif
 
 			for(i=0; i<maxPics; i++)
 			{

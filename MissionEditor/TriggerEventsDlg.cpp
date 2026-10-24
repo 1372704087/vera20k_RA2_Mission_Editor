@@ -517,11 +517,7 @@ void CTriggerEventsDlg::UpdateDialog()
 	int i;
 
 	//9.3.2001: Only use specified section, do not merge
-#ifndef RA2_MODE 
-	CString sec="Events";
-#else
 	CString sec="EventsRA2";
-#endif
 
 	for(i=0;i<g_data.sections[sec].values.size();i++)
 	{

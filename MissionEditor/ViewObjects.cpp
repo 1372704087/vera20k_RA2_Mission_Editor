@@ -704,9 +704,6 @@ void CViewObjects::UpdateDialog()
 	HTREEITEM deleteoverlay=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("DelOvrlObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
 	HTREEITEM tiberium=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("GrTibObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
 	//HTREEITEM bluetiberium=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("BlTibObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
-#ifndef RA2_MODE
-	HTREEITEM veinhole=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("VeinholeObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
-#endif
 	HTREEITEM bridges=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("BridgesObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
 	HTREEITEM alloverlay=tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("OthObList"), 0,0,0,0, -1, rootitems[5], TVI_LAST );
 	HTREEITEM everyoverlay=NULL;
@@ -737,10 +734,6 @@ void CViewObjects::UpdateDialog()
 	tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("DrawTib2ObList"), 0,0,0,0, valadded*6+300+10, tiberium, TVI_LAST );
 	//tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("IncTibSizeObList"), 0,0,0,0, valadded*6+300+20, bluetiberium, TVI_LAST );
 	//tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("DecTibSizeObList"), 0,0,0,0, valadded*6+300+21, bluetiberium, TVI_LAST );
-#ifndef RA2_MODE
-	tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("VeinholeObList"), 0,0,0,0, valadded*6+400+0, veinhole, TVI_LAST );
-	tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("VeinsObList"), 0,0,0,0, valadded*6+400+1, veinhole, TVI_LAST );
-#endif
 
 	if(Map->GetTheater()!=THEATER4 && Map->GetTheater()!=THEATER5)
 	{
@@ -763,19 +756,6 @@ void CViewObjects::UpdateDialog()
 
 	}
 
-#ifndef RA2_MODE
-	if (!theApp.m_Options.bEasy && isTrue(g_data.sections["Debug"].values["AllowTunnels"]))
-	{
-		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("NewTunnelObList"), 0, 0, 0, 0, 50, rootitems[9], TVI_LAST);
-		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("ModifyTunnelObList"), 0, 0, 0, 0, 51, rootitems[9], TVI_LAST);
-		if (isTrue(g_data.sections["Debug"].values["AllowUnidirectionalTunnels"]))
-		{
-			tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("NewTunnelSingleObList"), 0, 0, 0, 0, 52, rootitems[9], TVI_LAST);
-			tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("ModifyTunnelSingleObList"), 0, 0, 0, 0, 53, rootitems[9], TVI_LAST);
-		}
-		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("DelTunnelObList"), 0, 0, 0, 0, 54, rootitems[9], TVI_LAST);
-	}
-#else
 	if (!theApp.m_Options.bEasy && isTrue(g_data.sections["Debug"].values["AllowTunnels"]))
 	{
 		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("NewTunnelObList"), 0, 0, 0, 0, 50, rootitems[9], TVI_LAST);
@@ -787,7 +767,6 @@ void CViewObjects::UpdateDialog()
 		}
 		tree.InsertItem(TVIF_PARAM | TVIF_TEXT, GetLanguageStringACP("DelTunnelObList"), 0,0,0,0, 54, rootitems[9], TVI_LAST );
 	}
-#endif
 
 
 	int lv=1;

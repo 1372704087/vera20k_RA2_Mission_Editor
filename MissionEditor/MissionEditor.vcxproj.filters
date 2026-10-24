@@ -16,9 +16,6 @@
     <Filter Include="Data">
       <UniqueIdentifier>{c6e36256-e11e-46de-8078-890285750aab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Data\FinalSun">
-      <UniqueIdentifier>{949206c9-d492-4ca2-8d0d-2d4e7ef20e68}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Data\FinalAlert2">
       <UniqueIdentifier>{232e1539-2bf0-49ec-bc42-231495d83bc8}</UniqueIdentifier>
     </Filter>
@@ -570,9 +567,6 @@
     <Image Include="res\clifftoo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\FinalSun.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\ico00003.ico">
       <Filter>Resource Files</Filter>
     </Image>
@@ -601,15 +595,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\wp_ra2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\celltag_ts.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\wp_ts.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\scrollcursor_ts.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\scrollcursor_ra2.bmp">
@@ -643,17 +628,8 @@
     <CustomBuild Include="data\FinalAlert2\FALanguage.ini">
       <Filter>Data\FinalAlert2</Filter>
     </CustomBuild>
-    <CustomBuild Include="data\FinalSun\FSLanguage.ini">
-      <Filter>Data\FinalSun</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\FinalSun\FSData.ini">
-      <Filter>Data\FinalSun</Filter>
-    </None>
-    <None Include="res\ts_arrow.cur">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\ra2_arrow.cur">
       <Filter>Resource Files</Filter>
     </None>

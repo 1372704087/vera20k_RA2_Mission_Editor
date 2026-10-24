@@ -362,9 +362,6 @@ void CMapData::CalcMapRect()
 
 WORD CMapData::GetHousesCount(BOOL bCountries)
 {
-#ifndef RA2_MODE
-	bCountries = FALSE;
-#endif
 
 	CString sSection = MAPHOUSES;
 	if (bCountries) sSection = HOUSES;
@@ -380,9 +377,6 @@ CString CMapData::GetHouseID(WORD wHouse, BOOL bCountry)
 	if (wHouse >= GetHousesCount())
 		return CString("");
 
-#ifndef RA2_MODE
-	bCountry = FALSE;
-#endif
 
 	CString sSection = MAPHOUSES;
 	if (bCountry) sSection = HOUSES;
@@ -4068,9 +4062,6 @@ void CMapData::CreateMap(DWORD dwWidth, DWORD dwHeight, LPCTSTR lpTerrainType, D
 
 	CString stdMap;
 	stdMap = AppPath;
-#ifdef TS_MODE
-	stdMap += "\\StdMapTS.ini";
-#endif
 #ifdef RA2_MODE
 	stdMap += "\\StdMapRA2.ini";
 #endif
@@ -6513,9 +6504,6 @@ void CMapData::SmoothTiberium(DWORD dwPos)
 
 void CMapData::ResizeMap(int iLeft, int iTop, DWORD dwNewWidth, DWORD dwNewHeight)
 {
-#ifndef RA2_MODE
-	if (MessageBox(0, "Tunnels may be damaged after changing the map size. Continue?", "Warning", MB_YESNO) == IDNO) return;
-#endif
 
 	// MW: New object replacing code to fix crashes
 	INFANTRY* inf = new(INFANTRY[GetInfantryCount()]);
@@ -7018,9 +7006,6 @@ int GetEventParamStart(CString& EventData, int param);
 
 BOOL CMapData::IsYRMap()
 {
-#ifdef TS_MODE
-	return FALSE;
-#else
 
 	//if(yuri_mode) // always check for this
 	{
@@ -7171,7 +7156,6 @@ BOOL CMapData::IsYRMap()
 	}
 
 	return FALSE;
-#endif
 }
 
 #ifdef SMUDGE_SUPP

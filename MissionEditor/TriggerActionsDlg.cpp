@@ -500,11 +500,7 @@ void CTriggerActionsDlg::UpdateDialog()
 	CIniFile& ini=Map->GetIniFile();
 
 	// 9.3.2001: Only support specified section
-#ifndef RA2_MODE
-	CString sec="Actions";
-#else
 	CString sec="ActionsRA2";
-#endif
 
 	while(m_ActionType.DeleteString(0)!=CB_ERR);
 	int i;

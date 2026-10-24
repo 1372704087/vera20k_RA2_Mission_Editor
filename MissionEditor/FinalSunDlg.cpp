@@ -250,11 +250,7 @@ BOOL CFinalSunDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// use small symbol
 	
 	CString cap;
-#ifndef RA2_MODE
-	cap= GetLanguageStringACP("MainDialogCaption");
-#else
 	cap=GetLanguageStringACP("MainDialogCaptionRA2");
-#endif
 
 	cap+=" (";
 	cap+=GetLanguageStringACP("NoMapLoaded");
@@ -404,18 +400,6 @@ BOOL CFinalSunDlg::OnInitDialog()
 
 	UpdateDialogs();
 
-#ifndef RA2_MODE	
-	CTime t=t.GetCurrentTime();
-	
-	if(t.GetDay()>=24 && t.GetDay()<=26 && t.GetMonth()==12)
-	{
-		CString str;
-		GetWindowText(str);
-
-		SetWindowText(str+" Merry Christmas! Fröhliche Weihnachten!");
-
-	}
-#endif
 	
 
 	return TRUE;  
@@ -1205,19 +1189,11 @@ void CFinalSunDlg::SaveMap(CString FileName_)
 
 		DWORD bwr;
 		
-#ifdef TS_MODE
-		fi= "; Map created with FinalSun Mission Editor";
-		fi+="\n";
-		fi+= "; note that all comments were truncated" ;
-		fi+= "\n";
-		fi+="\n";
-#else
 		fi= "; Map created with FinalAlert 2 Mission Editor";
 		fi+="\n";
 		fi+= "; note that all comments were truncated" ;
 		fi+= "\n";
 		fi+="\n";
-#endif
 
 		WriteFile(hFile, fi, fi.GetLength(), &bwr, NULL);
 
@@ -1953,12 +1929,7 @@ void CFinalSunDlg::OnFileNew()
 					ini.sections[house].values["PlayerControl"]="yes";
 				}
 
-#ifndef RA2_MODE
-				ini.sections[house].values["ActsLike"]=c;
-				ini.sections[house].values["Side"]=house;
-#else
 				ini.sections[house].values["Country"]=*rules.sections[HOUSES].GetValue(i);
-#endif
 				ini.sections[house].values["Edge"]="North";
 				
 				ini.sections[house].values["Color"]=rules.sections[*rules.sections[HOUSES].GetValue(i)].values["Color"];
@@ -2283,11 +2254,7 @@ void CFinalSunDlg::OnOptionsSimpleview()
 
 	UpdateStrings();
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
 
 	UpdateDialogs();
 }
@@ -3171,11 +3138,7 @@ LONG __stdcall ExceptionHandler(
 	}
 
 	CString s3;
-#ifdef TS_MODE
-	s3="INTERNAL APPLICATION ERROR\n\nApplication will now try to free memory, save the current map as \"fcrash_backup.map\" in the FinalSun directory and quit.\n\n\n";
-#else // RA2_MODE
 	s3="INTERNAL APPLICATION ERROR\n\nApplication will now try to free memory, save the current map as \"fcrash_backup.map\" in the FinalAlert 2 directory and quit.\n\n\n";
-#endif
 
 	s3+="Important: If this error has occured while loading graphics, it can very often be fixed by using another system color resolution (16, 24 or 32 bit).";
 
@@ -3545,11 +3508,7 @@ void CFinalSunDlg::OnOptionsDisableautoshore()
 	}
 
 	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
 
 }
 
@@ -3634,11 +3593,7 @@ void CFinalSunDlg::OnOptionsDisableautolat()
 	}
 
 	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif
 }
 
 void CFinalSunDlg::OnEditPaste() 
@@ -3728,11 +3683,7 @@ void CFinalSunDlg::OnOptionsSounds()
 	}
 
 	
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif	
 }
 
 void CFinalSunDlg::OnUpdateOptionsSounds(CCmdUI* pCmdUI) 
@@ -3761,11 +3712,7 @@ void CFinalSunDlg::OnOptionsDisableslopecorrection()
 		Options.sections["UserInterface"].values["DisableSlopeCorrection"]="1";
 	}
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath+"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath+"\\FinalAlert.ini");
-#endif	
 }
 
 void CFinalSunDlg::OnOptionsShowbuildingoutline() 
@@ -3793,11 +3740,7 @@ void CFinalSunDlg::OnOptionsShowbuildingoutline()
 
 	m_view.m_isoview->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath +"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath +"\\FinalAlert.ini");
-#endif	
 }
 
 
@@ -3877,11 +3820,7 @@ void CFinalSunDlg::InsertPrevFile(CString lpFilename)
 
 
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath +"\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath +"\\FinalAlert.ini");
-#endif	
 
 	UpdateStrings(); 
 }
@@ -4087,11 +4026,7 @@ void CFinalSunDlg::OnOptionsSmoothzoom()
 
 	Options.sections["UserInterface"].values["ViewScaleUseSteps"] = theApp.m_Options.viewScaleUseSteps ? "1" : "0";
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
-#endif
 }
 
 
@@ -4127,9 +4062,5 @@ void CFinalSunDlg::OnOptionsUsedefaultmousecursor()
 
 	Options.sections["UserInterface"].values["UseDefaultMouseCursor"] = theApp.m_Options.useDefaultMouseCursor ? "1" : "0";
 
-#ifndef RA2_MODE
-	Options.SaveFile(u8AppDataPath + "\\FinalSun.ini");
-#else
 	Options.SaveFile(u8AppDataPath + "\\FinalAlert.ini");
-#endif
 }

@@ -469,9 +469,6 @@ void CTeamTypes::UpdateDialog()
 		}
 	}
 	
-#ifdef TS_MODE
-	wayp->ShowWindow(SW_HIDE);
-#endif
 
 	m_TeamTypes.SetCurSel(0);
 	if(sel>=0) m_TeamTypes.SetCurSel(sel);
@@ -1233,9 +1230,6 @@ void CTeamTypes::OnKillfocusTag()
 
 void CTeamTypes::OnEditchangeTransportwaypoint() 
 {
-#ifndef RA2_MODE
-	return;
-#endif
 
 	CIniFile& ini=Map->GetIniFile();
 

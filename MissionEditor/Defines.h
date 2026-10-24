@@ -128,31 +128,8 @@
 
 
 #define ra2_mode 1
-#define ts_mode 0
 
 
-#ifndef RA2_MODE
-
-#define NO_URBAN
-#define MAXHEIGHT 14
-
-#define f_y 24
-#define f_x 48
-
-#define TERRAINTYPE_GROUND 0x0d
-#define TERRAINTYPE_WATER 0x09
-#define TERRAINTYPE_IMPASSABLE 0x0f
-#define TERRAINTYPE_ROUGH 0x0e
-#define TERRAINTYPE_PAVED 0x0b
-#define TERRAINTYPE_BUILDING 0x07
-#define TERRAINTYPE_DIRT_ROAD 0x0c
-#define TERRAINTYPE_ICE 0x01
-
-#define MAINMIX "TIBSUN.MIX"
-#define HOUSES "Houses"
-#define MAPHOUSES "Houses"
-
-#endif
 #ifdef RA2_MODE
 
 #define MAINMIX "RA2.MIX"

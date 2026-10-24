@@ -226,9 +226,6 @@ void CHouses::OnSelchangeHouses()
 
 	// ListHouses(m_ActsLike, TRUE);
 
-#ifndef RA2_MODE
-	m_ActsLike.SetWindowText(s.values["ActsLike"]);
-#endif
 	m_Allies.SetWindowText(TranslateHouse(s.values["Allies"], TRUE));
 	m_Color.SetWindowText(s.values["Color"]);
 	m_Credits.SetWindowText(s.values["Credits"]);
@@ -237,11 +234,7 @@ void CHouses::OnSelchangeHouses()
 	m_Nodecount.SetWindowText(s.values["NodeCount"]);
 	m_PercentBuilt.SetWindowText(s.values["PercentBuilt"]);
 	m_PlayerControl.SetWindowText(s.values["PlayerControl"]);
-#ifndef RA2_MODE
-	m_Side.SetWindowText(s.values["Side"]);
-#else
 	m_Side.SetWindowText(TranslateHouse(s.values["Country"], TRUE));
-#endif
 	m_TechLevel.SetWindowText(s.values["TechLevel"]);
 
 }
@@ -373,26 +366,16 @@ void CHouses::AddHouse(const char *name)
 
 	if(strstr(name, "Nod")!=NULL)
 	{
-#ifndef RA2_MODE
-		ini.sections[TranslateHouse(name)].values["Side"]="Nod";
-#endif
 		ini.sections[TranslateHouse(name)].values["Color"]="DarkRed";
 		if(name!="Nod") ini.sections[name].values["Allies"]+=",Nod";
 	}
 	else
 	{
-#ifndef RA2_MODE
-		ini.sections[TranslateHouse(name)].values["Side"]="GDI";
-#endif
 		ini.sections[TranslateHouse(name)].values["Color"]="Gold";
 		if(name!="GDI") ini.sections[TranslateHouse(name)].values["Allies"]+=",GDI";
 	}
 	ini.sections[TranslateHouse(name)].values["Credits"]="0";
-#ifndef RA2_MODE
-	ini.sections[TranslateHouse(name)].values["ActsLike"]="0";
-#else
 	ini.sections[TranslateHouse(name)].values["Country"]=TranslateHouse(country);
-#endif
 	ini.sections[TranslateHouse(name)].values["NodeCount"]="0";
 	ini.sections[TranslateHouse(name)].values["TechLevel"]="10";
 	ini.sections[TranslateHouse(name)].values["PercentBuilt"]="100";
@@ -427,12 +410,8 @@ void CHouses::OnShowWindow(BOOL bShow, UINT nStatus)
 	{
 		if(ini.sections.find(MAPHOUSES)==ini.sections.end() && ini.sections.size()>0)
 		{
-#ifndef RA2_MODE
-			 MessageBox("No houses do exist, if you want to use houses, you should use ""Prepare houses"" before doing anything else. Note that in a multiplayer map independent computer players cannot be created by using the names GDI and Nod for the house. Just use something like GDI_AI.");
-#else
 			 MessageBox("No houses do exist, if you want to use houses, you should use ""Prepare houses"" before doing anything else.");
 
-#endif
 		}
 	}
 		else
@@ -561,11 +540,7 @@ void CHouses::OnKillfocusSide()
 	CString t;
 	m_Side.GetWindowText(t);
 	t=TranslateHouse(t);
-#ifndef RA2_MODE
-	s.values["Side"]=t;	
-#else
 	s.values["Country"]=t;
-#endif
 }
 
 void CHouses::OnKillfocusColor() 

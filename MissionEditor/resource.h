@@ -531,7 +531,6 @@
 #define IDS_VERSIONTEXT                 40018
 #define ID_DEBUG_EXPORTMAPPACKNOSECTIONS 40019
 #define IDS_VERSION                     40019
-#define IDS_VERSIONTEXTTS               40020
 #define ID_HELP_TIPOFTHEDAY             40022
 #define ID_OPTIONS_SIMPLEVIEW           40023
 #define ID_OPTIONS_SHOWMINIMAP          40024

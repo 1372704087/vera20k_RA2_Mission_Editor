@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="FinalSunDebug|Win32">
-      <Configuration>FinalSunDebug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="FinalAlertDebug YR|Win32">
       <Configuration>FinalAlertDebug YR</Configuration>
       <Platform>Win32</Platform>
@@ -19,10 +15,6 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="FinalAlertRelease|Win32">
       <Configuration>FinalAlertRelease</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="FinalSunRelease|Win32">
-      <Configuration>FinalSunRelease</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Template|Win32">
@@ -49,18 +41,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalAlertRelease YR|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -97,20 +77,6 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="PropertySheets\Release.props" />
-    <Import Project="PropertySheets\FinalSun.props" />
-    <Import Project="PropertySheets\Distribution.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-    <Import Project="PropertySheets\Debug.props" />
-    <Import Project="PropertySheets\FinalSun.props" />
-    <Import Project="PropertySheets\Distribution.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalAlertRelease YR|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -169,14 +135,6 @@
     <LinkIncremental>false</LinkIncremental>
     <TargetName>FinalAlert2YR</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <TargetName>FinalSun_D</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <TargetName>FinalSun</TargetName>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FinalAlertDebug YR|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>RA2_MODE;YR_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -220,24 +178,6 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>RA2_MODE;YR_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>TS_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\MissionEditorPackLib</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>TS_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>TS_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\MissionEditorPackLib</AdditionalIncludeDirectories>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>TS_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
@@ -315,10 +255,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='FinalAlertRelease|Win32'">stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='FinalAlertRelease YR|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='FinalAlertRelease YR|Win32'">stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='FinalSunDebug|Win32'">stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='FinalSunRelease|Win32'">stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="structs.cpp" />
     <ClCompile Include="Tags.cpp" />
@@ -449,26 +385,21 @@
   <ItemGroup>
     <Image Include="res\bmp00005.bmp" />
     <Image Include="res\celltag_ra2.bmp" />
-    <Image Include="res\celltag_ts.bmp" />
     <Image Include="res\clifftoo.bmp" />
     <Image Include="res\FinalAlert2.ico" />
     <Image Include="res\FinalAlert2YR.ico" />
-    <Image Include="res\FinalSun.ico" />
     <Image Include="res\ico00003.ico" />
     <Image Include="res\idr_main.ico" />
     <Image Include="res\litebulb.bmp" />
     <Image Include="res\mv_probl.bmp" />
     <Image Include="res\scrollcursor_ra2.bmp" />
-    <Image Include="res\scrollcursor_ts.bmp" />
     <Image Include="res\terrainb.bmp" />
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\wp_ra2.bmp" />
-    <Image Include="res\wp_ts.bmp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="data\FinalAlert2\FAData.ini" />
     <CustomBuild Include="data\FinalAlert2\FALanguage.ini" />
-    <CustomBuild Include="data\FinalSun\FSLanguage.ini" />
     <CustomBuild Include="res\FinalSun.rc2" />
   </ItemGroup>
   <ItemGroup>
@@ -486,9 +417,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\FinalSun\FSData.ini" />
     <None Include="res\ra2_arrow.cur" />
-    <None Include="res\ts_arrow.cur" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\shared\Changelog.txt" />

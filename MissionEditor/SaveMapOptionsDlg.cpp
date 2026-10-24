@@ -104,7 +104,6 @@ BOOL CSaveMapOptionsDlg::OnInitDialog()
 		GetDlgItem(IDC_NOPREVIEW)->EnableWindow(FALSE);
 		GetDlgItem(IDC_EXISTINGPREVIEW)->EnableWindow(FALSE);
 
-#ifndef TS_MODE
 		GetDlgItem(IDC_AIRWAR)->EnableWindow(FALSE);
 		GetDlgItem(IDC_COOPERATIVE)->EnableWindow(FALSE);
 		GetDlgItem(IDC_DUEL)->EnableWindow(FALSE);
@@ -114,7 +113,6 @@ BOOL CSaveMapOptionsDlg::OnInitDialog()
 		GetDlgItem(IDC_NUKEWAR)->EnableWindow(FALSE);
 		GetDlgItem(IDC_STANDARD)->EnableWindow(FALSE);
 		GetDlgItem(IDC_TEAMGAME)->EnableWindow(FALSE);
-#endif	
 	}
 	
 	return TRUE;  // return TRUE unless you set the focus to a control

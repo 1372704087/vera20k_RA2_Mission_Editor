@@ -1,6 +1,6 @@
-# FinalSun / FinalAlert (YR) 2 Mission Editor
+# FinalAlert (YR) 2 Mission Editor
 
-This repository contains the source code for the FinalSun/FinalAlert (YR) Mission Editor.
+This repository contains the source code for the FinalAlert 2 / FinalAlert 2 (YR) Mission Editor (Red Alert 2 and Yuri's Revenge support only; Tiberian Sun support has been removed).
 
 The official version for both applications has been increased to v2.0 in order to illustrate they now run properly on modern operating systems. We also used this opporunity to update the application and fix some known issues.
 
@@ -74,8 +74,6 @@ There is a helper script that can create the distributions in the script folder:
 
 This rebuilds everything and creates several files in the dist folder:
 
-  - FinalSun.zip
-    - Contains a FinalSun distribution
   - FinalAlert2.zip
     - Contains a FinalAlert2 distribution
   - FinalAlert2YR.zip
@@ -89,9 +87,8 @@ When distributing, you yourself are responsible for fulfilling all license requi
 There is no warranty that the helper script automatically fulfills all requirements.
 
 # Directories
-MissionEditor\data\shared - Data copied to both FS/FA2 distribution
+MissionEditor\data\shared - Data copied to both FA2 distributions
 MissionEditor\data\FinalAlert2 - Additional data copied to FA2 distribution
-MissionEditor\data\FinalSun - Additional data copied to FS distribution
 
 MissionEditor\PropertySheets - Some property sheets to ease managing the many project configurations
 

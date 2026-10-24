@@ -3531,38 +3531,6 @@ COLORREF CIsoView::GetColor(const char* house, const char* vcolor)
 		}
 	}
 
-#ifndef RA2_MODE
-	if (strstr(house, houses[0].name) != NULL)
-	{
-		return GDI;
-	}
-	else if (strstr(house, houses[1].name) != NULL)
-	{
-		return Nod;
-	}
-	else if (strstr(house, houses[2].name) != NULL)
-	{
-		return neutral;
-	}
-	else
-	{
-		if (isIncluded(color, "darkred") != NULL)
-		{
-			return Nod;
-		}
-		if (isIncluded(color, "grey") != NULL)
-		{
-			return RGB(120, 120, 120);
-		}
-		if (isIncluded(color, "gold") != NULL)
-		{
-			return GDI;
-		}
-
-
-		return other;
-	}
-#else
 	if (isIncluded(color, "darkred") != NULL)
 	{
 		return RGB(130, 20, 20);
@@ -3616,7 +3584,6 @@ COLORREF CIsoView::GetColor(const char* house, const char* vcolor)
 		return other;
 	}
 
-#endif
 
 
 }
@@ -5967,20 +5934,6 @@ void CIsoView::DrawMap()
 
 #ifdef RA2_MODE
 					BlitPic(ddsd.lpSurface, drawCoordsOvrl.x, drawCoordsOvrl.y, r.left, r.top, ddsd.lPitch, r.right, r.bottom, pic);
-#endif
-#ifdef TS_MODE 
-					if (!isGreenTiberium(m.overlay) && !(m.overlay == 0x7f)) // no tib
-						BlitPic(ddsd.lpSurface, drawCoordsOvrl.x, drawCoordsOvrl.y, r.left, r.top, ddsd.lPitch, r.right, r.bottom, pic);
-					else if (m.overlay == 0x7f) // blue tib
-					{
-						int n = RGB(200, 0, 0);
-						BlitPic(ddsd.lpSurface, drawCoordsOvrl.x, drawCoordsOvrl.y, r.left, r.top, ddsd.lPitch, r.right, r.bottom, pic, &n);
-					}
-					else
-					{
-						int n = RGB(0, 200, 0);
-						BlitPic(ddsd.lpSurface, drawCoordsOvrl.x, drawCoordsOvrl.y, r.left, r.top, ddsd.lPitch, r.right, r.bottom, pic, &n);
-					}
 #endif
 
 #endif
