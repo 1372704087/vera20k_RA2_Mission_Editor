@@ -25,6 +25,7 @@
 #include "FinalSun.h"
 #include "AiTriggerTypesEnable.h"
 #include "mapdata.h"
+#include "functions.h"
 #include "variables.h"
 #include "inlines.h"
 #include "aitriggeradddlg.h"
@@ -92,7 +93,7 @@ void CAiTriggerTypesEnable::UpdateDialog()
 		if(ai.sections["AITriggerTypes"].values.find(aitrigger)!=ai.sections["AITriggerTypes"].values.end())
 		{
 			// standard ai trigger
-			str+=GetParam(ai.sections["AITriggerTypes"].values[aitrigger],0);
+			str+=TranslateStringACP(GetParam(ai.sections["AITriggerTypes"].values[aitrigger],0)); // display-only name
 			str+=" -> ";
 			str+=*ini.sections["AITriggerTypesEnable"].GetValue(i);
 
@@ -100,7 +101,7 @@ void CAiTriggerTypesEnable::UpdateDialog()
 		}
 		if(ini.sections["AITriggerTypes"].values.find(aitrigger)!=ini.sections["AITriggerTypes"].values.end())
 		{
-			str+=GetParam(ini.sections["AITriggerTypes"].values[aitrigger],0);
+			str+=TranslateStringACP(GetParam(ini.sections["AITriggerTypes"].values[aitrigger],0)); // display-only name
 			str+=" -> ";
 			str+=*ini.sections["AITriggerTypesEnable"].GetValue(i);
 		}
