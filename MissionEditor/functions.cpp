@@ -1440,6 +1440,34 @@ void ListTeamTypes(CComboBox &cb, BOOL bListNone)
 	if(sel>=0) cb.SetCurSel(sel);
 }
 
+// Translate one control text: the whole string first, and for multi-line
+// texts (message boxes join their lines with newlines, which cannot appear
+// in an ini key) each line on its own.
+static CString TranslateWindowText(const CString& s)
+{
+	CString t = TranslateStringACP((LPCTSTR)s);
+	if (t != s) return t;
+
+	if (s.Find('\n') < 0) return s;
+
+	CString out;
+	int pos = 0;
+	BOOL any = FALSE;
+	while (pos <= s.GetLength())
+	{
+		int nl = s.Find('\n', pos);
+		CString line = (nl < 0) ? s.Mid(pos) : s.Mid(pos, nl - pos);
+		line.TrimRight('\r');
+		CString lt = TranslateStringACP((LPCTSTR)line);
+		if (lt != line) any = TRUE;
+		if (!out.IsEmpty()) out += "\r\n";
+		out += lt;
+		if (nl < 0) break;
+		pos = nl + 1;
+	}
+	return any ? out : s;
+}
+
 void TranslateDialogTexts(CWnd* pWnd)
 {
 	if (pWnd == NULL || pWnd->GetSafeHwnd() == NULL) return;
@@ -1448,7 +1476,7 @@ void TranslateDialogTexts(CWnd* pWnd)
 	pWnd->GetWindowText(cap);
 	if (!cap.IsEmpty())
 	{
-		CString t = TranslateStringACP((LPCTSTR)cap);
+		CString t = TranslateWindowText(cap);
 		if (t != cap) pWnd->SetWindowText(t);
 	}
 
@@ -1458,7 +1486,7 @@ void TranslateDialogTexts(CWnd* pWnd)
 		pChild->GetWindowText(s);
 		if (!s.IsEmpty())
 		{
-			CString t = TranslateStringACP((LPCTSTR)s);
+			CString t = TranslateWindowText(s);
 			if (t != s) pChild->SetWindowText(t);
 		}
 		TranslateDialogTexts(pChild);
