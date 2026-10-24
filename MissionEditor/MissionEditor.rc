@@ -2785,6 +2785,7 @@ BEGIN
         MENUITEM "Paint cliff back",            ID_MAPTOOLS_BACKCLIFF
         MENUITEM SEPARATOR
         MENUITEM "Search Waypoint",             ID_MAPTOOLS_SEARCHWAYPOINT
+        MENUITEM "Batch place start waypoints (VERA20K)", ID_MAPTOOLS_BATCHSPAWNS
         MENUITEM SEPARATOR
         MENUITEM "Tool Scripts",                ID_MAPTOOLS_TOOLSCRIPTS
     END

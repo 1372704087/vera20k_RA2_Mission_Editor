@@ -231,6 +231,7 @@ protected:
 	afx_msg void OnFileFile3();
 	afx_msg void OnFileFile4();
 	afx_msg void OnMaptoolsSearchwaypoint();
+	afx_msg void OnMaptoolsBatchspawns();
 	afx_msg void OnMaptoolsToolscripts();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

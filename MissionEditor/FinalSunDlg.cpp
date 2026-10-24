@@ -52,6 +52,8 @@
 #include "inlines.h"
 #include "MapCode.h"
 #include "SearchWaypointDlg.h"
+#include "inputbox.h"
+#include <cmath>
 #include "userscriptsdlg.h"
 
 
@@ -223,6 +225,7 @@ BEGIN_MESSAGE_MAP(CFinalSunDlg, CDialog)
 	ON_COMMAND(ID_FILE_FILE3, OnFileFile3)
 	ON_COMMAND(ID_FILE_FILE4, OnFileFile4)
 	ON_COMMAND(ID_MAPTOOLS_SEARCHWAYPOINT, OnMaptoolsSearchwaypoint)
+	ON_COMMAND(ID_MAPTOOLS_BATCHSPAWNS, OnMaptoolsBatchspawns)
 	ON_COMMAND(ID_MAPTOOLS_TOOLSCRIPTS, OnMaptoolsToolscripts)
 	//}}AFX_MSG_MAP
 		ON_COMMAND(ID_OPTIONS_SMOOTHZOOM, &CFinalSunDlg::OnOptionsSmoothzoom)
@@ -3970,7 +3973,7 @@ void CFinalSunDlg::OpenMap(LPCSTR lpFilename)
 
 }
 
-void CFinalSunDlg::OnMaptoolsSearchwaypoint() 
+void CFinalSunDlg::OnMaptoolsSearchwaypoint()
 {
 	if(Map->GetIsoSize()==0) return;
 
@@ -3979,6 +3982,72 @@ void CFinalSunDlg::OnMaptoolsSearchwaypoint()
 	if(dlg.m_WaypointIndex<0) return;
 
 	m_view.m_isoview->FocusWaypoint(dlg.m_WaypointIndex);
+}
+
+void CFinalSunDlg::OnMaptoolsBatchspawns()
+{
+	if(Map->GetIsoSize()==0) return;
+	if(!Map->IsMultiplayer())
+	{
+		MessageBox("Batch placing start waypoints requires a multiplayer map.", "Error", MB_ICONERROR);
+		return;
+	}
+
+	const int mapwidth=Map->GetWidth();
+	const int mapheight=Map->GetHeight();
+	if(mapwidth!=mapheight || mapwidth<16 || mapwidth>256)
+	{
+		MessageBox("Batch placing requires a square map with a size of at most 256\n"
+			"(VERA20K's 500x500-cell map is Size=0,0,250,250).", "Error", MB_ICONERROR);
+		return;
+	}
+
+	CString str=InputBox("Number of start waypoints to place (2-701):", "Batch place start waypoints");
+	if(str.IsEmpty()) return;
+	const int count=atoi(str);
+	if(count<2||count>701)
+	{
+		MessageBox("Invalid count.", "Error", MB_ICONERROR);
+		return;
+	}
+
+	// Grid layout over the diamond, ported from vera20k's tools/scale_map.py
+	// grid_starts: in screen-aligned (u,v) = (rx-ry, rx+ry) space the diamond
+	// is the rectangle |u|<size, size<v<=3*size; starts sit on a near-square
+	// grid there. u and v must share their parity so rx/ry are whole cells.
+	const int size=mapwidth;
+	const int columns=static_cast<int>(ceil(sqrt(static_cast<double>(count))));
+	const int rows=(count+columns-1)/columns;
+	const double u_pitch=2.0*size/columns;
+	const double v_pitch=2.0*size/rows;
+
+	for(int index=0;index<count;index++)
+	{
+		int row=0, column=0;
+		row=index/columns;
+		column=index%columns;
+		int u=static_cast<int>(-size+(column+0.5)*u_pitch);
+		int v=static_cast<int>(size+(row+0.5)*v_pitch);
+		if(((u+v)%2)!=0) v++;
+
+		const int rx=(v+u)/2;
+		const int ry=(v-u)/2;
+
+		// FinalAlert stores the diamond transposed to the native (rx,ry)
+		// frame: internal x=ry, y=rx, so the cell position is ry+rx*IsoSize.
+		// AddWaypoint encodes the value as ry*1000+rx, which is exactly what
+		// VERA20K's waypoint reader expects.
+		const DWORD pos=ry+rx*Map->GetIsoSize();
+		if(pos>=static_cast<DWORD>(Map->GetIsoSize())*Map->GetIsoSize()) continue;
+
+		char c[50];
+		itoa(index,c,10);
+		Map->AddWaypoint(c,pos);
+	}
+
+	m_view.m_isoview->RedrawWindow(NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
+	MessageBox("Placed start waypoints 0 to "+str+" on a grid. Use ""Prepare houses"" "
+		"in the houses dialog to create the matching houses.", "Batch place start waypoints");
 }
 
 void CFinalSunDlg::OnMaptoolsToolscripts() 

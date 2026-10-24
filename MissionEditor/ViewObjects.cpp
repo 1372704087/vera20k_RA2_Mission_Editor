@@ -655,7 +655,9 @@ void CViewObjects::UpdateDialog()
 
 		
 	int e;
-	int max=8;
+	// VERA20K supports up to 30 players; the engine reads start waypoints
+	// 0..n sequentially (waypoint slots themselves go up to 701).
+	int max=30;
 	//if(ini.sections.find(HOUSES)!=ini.sections.end() && ini.sections.find(MAPHOUSES)!=ini.sections.end())
 	if(!Map->IsMultiplayer())
 		max=1;

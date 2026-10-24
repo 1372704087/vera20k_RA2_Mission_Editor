@@ -248,30 +248,71 @@ void CHouses::OnPreparehouses()
 	{
 		ini.sections["Basic"].values["MultiplayerOnly"]="1";
 
+		const int countries=rules.sections[HOUSES].values.size();
+		if(countries<=0)
+		{
+			UpdateDialog();
+			return;
+		}
+
+		// VERA20K maps can host more players than there are rules countries
+		// (up to 30 start waypoints). Match the house count to whichever is
+		// larger; repeated countries get a numeric suffix so the section
+		// names stay unique.
+		int starts=0;
+		for(;;)
+		{
+			BOOL bFound=FALSE;
+			int i2;
+			for(i2=0;i2<Map->GetWaypointCount();i2++)
+			{
+				CString id;
+				DWORD pos;
+				Map->GetWaypointData(i2,&id,&pos);
+				if(atoi(id)==starts)
+				{
+					bFound=TRUE;
+					break;
+				}
+			}
+			if(!bFound) break;
+			starts++;
+		}
+		const int housecount=(starts>countries)?starts:countries;
+
 		int i;
-		for (i=0;i<rules.sections[HOUSES].values.size();i++)
+		for (i=0;i<housecount;i++)
 		{
 			char c[50];
 			int k=i;
 			itoa(k,c,10);
-			CString country=*rules.sections[HOUSES].GetValue(i);
+			CString country=*rules.sections[HOUSES].GetValue(i%countries);
 
-			// we now create a MAPHOUSE with the same name as the current rules house
-			ini.sections[MAPHOUSES].values[c]=country;
-			
-			ini.sections[country].values["IQ"]="0";
-			ini.sections[country].values["Edge"]="North";
-			ini.sections[country].values["Color"]=rules.sections[country].values["Color"];
-			ini.sections[country].values["Allies"]=country;
-			ini.sections[country].values["Country"]=country;
-			ini.sections[country].values["Credits"]="0";
-			ini.sections[country].values["NodeCount"]="0";
-			ini.sections[country].values["TechLevel"]="1";
-			ini.sections[country].values["PercentBuilt"]="0";
-			ini.sections[country].values["PlayerControl"]="no";
+			CString name=country;
+			if(i>=countries)
+			{
+				char s[50];
+				itoa(i/countries+1,s,10);
+				name=country+s;
+			}
+
+			// we now create a MAPHOUSE named after the rules house (or a
+			// numbered copy of it)
+			ini.sections[MAPHOUSES].values[c]=name;
+
+			ini.sections[name].values["IQ"]="0";
+			ini.sections[name].values["Edge"]="North";
+			ini.sections[name].values["Color"]=rules.sections[country].values["Color"];
+			ini.sections[name].values["Allies"]=name;
+			ini.sections[name].values["Country"]=country;
+			ini.sections[name].values["Credits"]="0";
+			ini.sections[name].values["NodeCount"]="0";
+			ini.sections[name].values["TechLevel"]="1";
+			ini.sections[name].values["PercentBuilt"]="0";
+			ini.sections[name].values["PlayerControl"]="no";
 
 		}
-		
+
 		UpdateDialog();
 		return;
 	}
