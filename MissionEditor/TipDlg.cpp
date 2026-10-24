@@ -89,12 +89,27 @@ CTipDlg::CTipDlg(CWnd* pParent /*=NULL*/)
 
 	}
 
-	if (fseek(m_pStream, iFilePos, SEEK_SET) != 0) 
+	if (fseek(m_pStream, iFilePos, SEEK_SET) != 0)
 	{
 		AfxMessageBox(GetLanguageStringACP("CG_IDP_FILE_CORRUPT"));
 	}
-	else 
+	else
 	{
+		if (iFilePos > 0)
+		{
+			// A stale byte offset can land mid-line, e.g. after the tips
+			// file was rewritten in another encoding; then the first read
+			// starts inside a multi-byte character and shows mojibake.
+			// Realign to a line start before reading.
+			if (fseek(m_pStream, iFilePos - 1, SEEK_SET) == 0
+				&& fgetc(m_pStream) != '\n')
+			{
+				int c;
+				while ((c = fgetc(m_pStream)) != EOF && c != '\n')
+				{
+				}
+			}
+		}
 		GetNextTipString(m_strTip);
 	}
 
