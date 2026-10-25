@@ -468,6 +468,25 @@ void GameAssets::openSubMixes() {
 }
 
 bool GameAssets::find(const char* name, std::vector<uint8_t>& out) const {
+    // loose file in the game dir first (mod repacks keep rules/art INIs unpacked)
+    if (!dir_.empty()) {
+        std::wstring wname;
+        for (const char* p = name; *p; p++) wname += (*p == '/') ? L'\\' : (wchar_t)(unsigned char)*p;
+        std::wstring path = dir_ + L"\\" + wname;
+        if (FILE* f = _wfopen(path.c_str(), L"rb")) {
+            bool ok = false;
+            _fseeki64(f, 0, SEEK_END);
+            long long sz = _ftelli64(f);
+            _fseeki64(f, 0, SEEK_SET);
+            if (sz > 0 && sz < 400LL * 1024 * 1024) {
+                out.resize((size_t)sz);
+                ok = fread(out.data(), 1, (size_t)sz, f) == (size_t)sz;
+            }
+            fclose(f);
+            if (ok) return true;
+            out.clear();
+        }
+    }
     for (const DiskMix* dm : diskMixes_) {
         if (dm->read(name, out)) return true;
     }

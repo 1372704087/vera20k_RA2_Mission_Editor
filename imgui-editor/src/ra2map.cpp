@@ -98,6 +98,109 @@ std::vector<uint8_t> base64Decode(const std::string& text) {
     return out;
 }
 
+static const char* B64 =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+std::string base64Encode(const uint8_t* data, size_t len) {
+    std::string out;
+    out.reserve((len + 2) / 3 * 4);
+    uint32_t acc = 0;
+    int bits = 0;
+    for (size_t i = 0; i < len; i++) {
+        acc = (acc << 8) | data[i];
+        bits += 8;
+        while (bits >= 6) {
+            bits -= 6;
+            out += B64[(acc >> bits) & 0x3F];
+        }
+    }
+    if (bits) out += B64[(acc << (6 - bits)) & 0x3F];
+    while (out.size() % 4) out += '=';
+    return out;
+}
+
+std::vector<uint8_t> lzo1xCompress(const uint8_t* src, size_t len) {
+    static bool inited = false;
+    if (!inited) {
+        if (lzo_init() != LZO_E_OK) throw std::runtime_error("lzo_init failed");
+        inited = true;
+    }
+    std::vector<uint8_t> wrk(LZO1X_1_MEM_COMPRESS);
+    std::vector<uint8_t> out(len + len / 16 + 64 + 3);
+    lzo_uint outLen = out.size();
+    int r = lzo1x_1_compress(src, len, out.data(), &outLen, wrk.data());
+    if (r != LZO_E_OK) throw std::runtime_error("lzo compress error");
+    out.resize(outLen);
+    return out;
+}
+
+// Format80 encoder: literal runs + fills only (valid stream, decoder-friendly).
+std::vector<uint8_t> lcwCompress(const uint8_t* src, size_t len) {
+    std::vector<uint8_t> out;
+    out.reserve(len + len / 8 + 16);
+    size_t i = 0;
+    size_t litStart = 0; // pending literal run start
+    auto flushLiterals = [&](size_t end) {
+        size_t n = end - litStart;
+        size_t p = litStart;
+        while (n > 0) {
+            size_t take = n > 63 ? 63 : n;
+            out.push_back((uint8_t)(0x80 | take));
+            out.insert(out.end(), src + p, src + p + take);
+            p += take;
+            n -= take;
+        }
+    };
+    while (i < len) {
+        // count run of identical bytes
+        size_t run = 1;
+        while (i + run < len && src[i + run] == src[i] && run < 0xFFFF) run++;
+        if (run >= 3) {
+            flushLiterals(i);
+            out.push_back(0xFE);
+            out.push_back((uint8_t)(run & 0xFF));
+            out.push_back((uint8_t)(run >> 8));
+            out.push_back(src[i]);
+            i += run;
+            litStart = i;
+        } else {
+            i += run;
+        }
+    }
+    flushLiterals(len);
+    out.push_back(0x80); // end marker
+    return out;
+}
+
+// chunked pack: [u16 inSize][u16 outSize][compressed block] per 8192 input bytes
+static std::vector<uint8_t> chunkedPack(const std::vector<uint8_t>& input,
+                                        bool lzo) {
+    std::vector<uint8_t> out;
+    size_t pos = 0;
+    while (pos < input.size()) {
+        size_t take = std::min<size_t>(input.size() - pos, 8192);
+        std::vector<uint8_t> block = lzo
+            ? lzo1xCompress(input.data() + pos, take)
+            : lcwCompress(input.data() + pos, take);
+        uint16_t in = (uint16_t)block.size(), outn = (uint16_t)take;
+        out.insert(out.end(), (uint8_t*)&in, (uint8_t*)&in + 2);
+        out.insert(out.end(), (uint8_t*)&outn, (uint8_t*)&outn + 2);
+        out.insert(out.end(), block.begin(), block.end());
+        pos += take;
+    }
+    return out;
+}
+
+std::string packSectionNumbered(const std::vector<uint8_t>& packed) {
+    std::string b64 = base64Encode(packed.data(), packed.size());
+    std::string out;
+    int key = 1;
+    for (size_t i = 0; i < b64.size(); i += 71) {
+        out += std::to_string(key++) + "=" + b64.substr(i, 71) + "\r\n";
+    }
+    return out;
+}
+
 // IsoMapPack5 payload: sequence of [u16 srcSize][u16 dstSize][LZO1X block]
 static std::vector<uint8_t> lzoChunkedDecompress(const uint8_t* data, size_t size) {
     std::vector<uint8_t> out;
@@ -266,19 +369,81 @@ bool Map::loadFromData(const std::string& data, std::string* error) {
     auto itHouses = ini.sections.find("Houses");
     houseCount = itHouses == ini.sections.end() ? 0 : (int)itHouses->second.entries.size();
 
-    auto itOv = ini.sections.find("OverlayPack");
+    overlayType.clear();
+    overlayFrame.clear();
     overlayBytes = 0;
+    auto itOv = ini.sections.find("OverlayPack");
     if (itOv != ini.sections.end()) {
         try {
             std::vector<uint8_t> packed = base64Decode(joinSection(itOv->second));
             std::vector<uint8_t> raw = lcwDecompress(packed.data(), packed.size(), 512 * 512);
             overlayBytes = (int)raw.size();
+            if (raw.size() == 512 * 512) overlayType = std::move(raw);
         } catch (const std::exception&) {
             overlayBytes = -1; // present but undecodable
         }
     }
+    auto itOvd = ini.sections.find("OverlayDataPack");
+    if (itOvd != ini.sections.end()) {
+        try {
+            std::vector<uint8_t> packed = base64Decode(joinSection(itOvd->second));
+            std::vector<uint8_t> raw = lcwDecompress(packed.data(), packed.size(), 512 * 512);
+            if (raw.size() == 512 * 512) overlayFrame = std::move(raw);
+        } catch (const std::exception&) {
+        }
+    }
 
     return true;
+}
+
+std::string Map::serializeToData() {
+    // --- waypoints ---
+    {
+        IniSection sec;
+        for (const auto& w : waypoints)
+            sec.entries.emplace_back(std::to_string(w.id),
+                                     std::to_string(w.ry * 1000 + w.rx));
+        ini.sections["Waypoints"] = std::move(sec);
+    }
+
+    // --- IsoMapPack5 ---
+    {
+        std::vector<uint8_t> raw;
+        raw.reserve(cells.size() * 11 + 11);
+        for (const auto& c : cells) {
+            raw.insert(raw.end(), (uint8_t*)&c.x, (uint8_t*)&c.x + 11);
+        }
+        uint8_t term[11] = {};
+        raw.insert(raw.end(), term, term + 11);
+        ini.sections["IsoMapPack5"].entries = {
+            {"__packed__", packSectionNumbered(chunkedPack(raw, true))}};
+    }
+
+    // --- OverlayPack / OverlayDataPack (engine arrays: always write full 512*512) ---
+    {
+        std::vector<uint8_t> types(512 * 512, 0), frames(512 * 512, 0);
+        if (overlayType.size() == 512 * 512) types = overlayType;
+        if (overlayFrame.size() == 512 * 512) frames = overlayFrame;
+        ini.sections["OverlayPack"].entries = {
+            {"__packed__", packSectionNumbered(chunkedPack(types, false))}};
+        ini.sections["OverlayDataPack"].entries = {
+            {"__packed__", packSectionNumbered(chunkedPack(frames, false))}};
+    }
+
+    // --- assemble: replace the packed placeholder entries with numbered keys ---
+    std::string out;
+    for (auto& [name, sec] : ini.sections) {
+        out += "[" + name + "]\r\n";
+        if (auto it = std::find_if(sec.entries.begin(), sec.entries.end(),
+                                   [](const auto& kv) { return kv.first == "__packed__"; });
+            it != sec.entries.end()) {
+            out += it->second;
+        } else {
+            for (auto& [k, v] : sec.entries) out += k + "=" + v + "\r\n";
+        }
+        out += "\r\n";
+    }
+    return out;
 }
 
 } // namespace ra2

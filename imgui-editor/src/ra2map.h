@@ -48,19 +48,33 @@ struct Map {
     std::vector<Waypoint> waypoints;     // sorted by id
     int houseCount = 0;                  // [Houses] entries
     int overlayBytes = 0;                // unpacked OverlayPack size
+    std::vector<uint8_t> overlayType;    // OverlayPack: per-cell type (512*512), empty if absent
+    std::vector<uint8_t> overlayFrame;   // OverlayDataPack: per-cell frame (512*512)
 
     std::string error;
 
     // Parses a raw .map/.mpr/.yrm (bare INI). MIX containers are rejected
     // for now with a clear message.
     bool loadFromData(const std::string& data, std::string* error);
+
+    // Serializes back to a map file: regenerates [Waypoints], [IsoMapPack5],
+    // [OverlayPack], [OverlayDataPack] from the edited model, keeps all other
+    // sections as loaded.
+    std::string serializeToData();
 };
 
 // --- codecs (standard public algorithms) ---
 std::vector<uint8_t> base64Decode(const std::string& text);
+std::string base64Encode(const uint8_t* data, size_t len);
 // LZO1X decompress, throws std::runtime_error on malformed input
 void lzo1xDecompress(const uint8_t* src, size_t srcLen, uint8_t* dst, size_t dstLen);
+// LZO1X compress (minilzo lzo1x_1), returns compressed bytes
+std::vector<uint8_t> lzo1xCompress(const uint8_t* src, size_t len);
 // Westwood LCW (Format80) decompress; maxOut caps the output buffer
 std::vector<uint8_t> lcwDecompress(const uint8_t* src, size_t srcLen, size_t maxOut);
+// LCW (Format80) compress: literal runs + fills
+std::vector<uint8_t> lcwCompress(const uint8_t* src, size_t len);
+// base64 text -> numbered-key section body ("1=...\r\n2=...") in FA2 style
+std::string packSectionNumbered(const std::vector<uint8_t>& packed);
 
 } // namespace ra2

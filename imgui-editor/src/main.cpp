@@ -12,6 +12,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "imgui.h"
@@ -59,6 +60,16 @@ static bool g_atlasDirty = false;
 
 static std::vector<int> g_drawOrder;          // cell indices sorted by (x+y, x)
 static int g_minX = 0, g_maxX = 0, g_minY = 0, g_maxY = 0;
+static std::unordered_map<uint32_t, int> g_cellAt; // (x<<16|y) -> cell index
+
+// overlay classification from rules (Tiberium=yes overlays: ore vs gems)
+static uint8_t g_oreIdx = 0, g_gemIdx = 0;
+static bool g_ovIsOre[256] = {}, g_ovIsGem[256] = {};
+
+enum Tool { TOOL_SELECT = 0, TOOL_ORE, TOOL_GEM, TOOL_CLEAR_OV, TOOL_RAISE, TOOL_LOWER };
+static int g_tool = TOOL_SELECT;
+static int g_brush = 0; // 0 = 1 cell, 1 = 3x3, 2 = 5x5
+static bool g_dirty = false;
 
 struct View {
     float zoom = 1.0f;
@@ -178,9 +189,14 @@ static void ReleaseTheater() {
 
 static void PrepareMapView() {
     g_drawOrder.clear();
+    g_cellAt.clear();
     if (g_map.cells.empty()) return;
     g_drawOrder.resize(g_map.cells.size());
-    for (int i = 0; i < (int)g_map.cells.size(); i++) g_drawOrder[i] = i;
+    for (int i = 0; i < (int)g_map.cells.size(); i++) {
+        g_drawOrder[i] = i;
+        const auto& c = g_map.cells[i];
+        g_cellAt[((uint32_t)(uint16_t)c.x << 16) | (uint16_t)c.y] = i;
+    }
     const auto& cs = g_map.cells;
     g_minX = cs[0].x; g_maxX = cs[0].x;
     g_minY = cs[0].y; g_maxY = cs[0].y;
@@ -198,6 +214,38 @@ static void PrepareMapView() {
     g_view.needsCenter = true;
 }
 
+static bool EnsureTheater();
+
+// Parse rules [OverlayTypes]: mark Tiberium=yes overlays (ore/gems by Name)
+static void LoadOverlayInfo() {
+    if (g_oreIdx || !g_assets) return;
+    std::vector<uint8_t> data;
+    if (!g_assets->find("rulesmd.ini", data) && !g_assets->find("rules.ini", data)) return;
+    ra2::Ini ini = ra2::Ini::parse(std::string((const char*)data.data(), data.size()));
+    auto it = ini.sections.find("OverlayTypes");
+    if (it == ini.sections.end()) return;
+    for (auto& [k, v] : it->second.entries) {
+        int num = atoi(k.c_str());
+        std::string nm = v;
+        size_t sc = nm.find(';');
+        if (sc != std::string::npos) nm = nm.substr(0, sc);
+        while (!nm.empty() && (nm.back() == ' ' || nm.back() == '\t')) nm.pop_back();
+        auto sit = ini.sections.find(nm);
+        if (sit == ini.sections.end()) continue;
+        if (_stricmp(sit->second.get("Tiberium", "no").c_str(), "yes") != 0) continue;
+        std::string name = sit->second.get("Name", "");
+        bool gem = name.find("Gem") != std::string::npos;
+        if (num < 1 || num > 255) continue;
+        if (gem) {
+            g_ovIsGem[num] = true;
+            if (!g_gemIdx) g_gemIdx = (uint8_t)num;
+        } else {
+            g_ovIsOre[num] = true;
+            if (!g_oreIdx) g_oreIdx = (uint8_t)num;
+        }
+    }
+}
+
 static bool EnsureTheater() {
     if (g_theater) return true;
     if (!g_loaded) return false;
@@ -211,6 +259,7 @@ static bool EnsureTheater() {
     g_theater = ra2::TheaterData::load(g_assets, g_map.theater, yuri, &g_theaterError);
     if (g_theater) {
         g_atlasDirty = true;
+        LoadOverlayInfo();
         return true;
     }
     return false;
@@ -327,6 +376,53 @@ static void OpenMapDialog(HWND hwnd) {
     }
 }
 
+// ---------------------------------------------------------------- save
+
+static void SaveMap(bool saveAs) {
+    if (!g_loaded) return;
+    std::wstring path = ToWide(g_map.path);
+    if (saveAs || path.empty()) {
+        OPENFILENAMEW ofn = {};
+        wchar_t file[MAX_PATH] = L"";
+        wcsncpy(file, path.c_str(), MAX_PATH - 1);
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = GetActiveWindow();
+        ofn.lpstrFilter = L"尤复地图\0*.yrm\0红警2地图\0*.map;*.mpr\0所有文件\0*.*\0";
+        ofn.lpstrFile = file;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
+        if (!GetSaveFileNameW(&ofn)) return;
+        path = file;
+    }
+    std::string data;
+    try {
+        data = g_map.serializeToData();
+    } catch (const std::exception& e) {
+        g_status = std::string("保存失败：") + e.what();
+        return;
+    }
+    FILE* f = _wfopen(path.c_str(), L"wb");
+    if (!f) {
+        g_status = "保存失败：无法写入文件";
+        return;
+    }
+    fwrite(data.data(), 1, data.size(), f);
+    fclose(f);
+
+    int nl = WideCharToMultiByte(CP_UTF8, 0, path.c_str(), (int)path.size(), nullptr, 0, nullptr, nullptr);
+    g_map.path.resize(nl);
+    WideCharToMultiByte(CP_UTF8, 0, path.c_str(), (int)path.size(), g_map.path.data(), nl, nullptr, nullptr);
+
+    int ovCount = 0;
+    if (g_map.overlayType.size() == 512 * 512)
+        for (uint8_t v : g_map.overlayType) ovCount += (v != 0);
+    char buf[512];
+    snprintf(buf, sizeof(buf), "已保存：%s（%d 格，%d 覆盖物，%d 路径点）",
+             g_map.path.c_str(), (int)g_map.cells.size(), ovCount, (int)g_map.waypoints.size());
+    g_status = buf;
+    g_dirty = false;
+}
+
 // ---------------------------------------------------------------- d3d
 
 bool CreateDeviceD3D(HWND hwnd) {
@@ -371,6 +467,61 @@ void CleanupDeviceD3D() {
 }
 
 // ---------------------------------------------------------------- viewport
+
+static void EnsureOverlayArrays() {
+    if (g_map.overlayType.size() != 512 * 512) g_map.overlayType.assign(512 * 512, 0);
+    if (g_map.overlayFrame.size() != 512 * 512) g_map.overlayFrame.assign(512 * 512, 0);
+}
+
+static void ApplyBrush(int cx, int cy) {
+    int r = g_brush;
+    bool overlayTool = g_tool == TOOL_ORE || g_tool == TOOL_GEM || g_tool == TOOL_CLEAR_OV;
+    if (overlayTool) EnsureOverlayArrays();
+    for (int dy = -r; dy <= r; dy++) {
+        for (int dx = -r; dx <= r; dx++) {
+            int x = cx + dx, y = cy + dy;
+            if (x < 0 || x > 511 || y < 0 || y > 511) continue;
+            size_t idx = (size_t)y * 512 + x;
+            switch (g_tool) {
+            case TOOL_ORE:
+                if (g_oreIdx && g_map.overlayType[idx] != g_oreIdx) {
+                    g_map.overlayType[idx] = g_oreIdx;
+                    g_map.overlayFrame[idx] = 0;
+                    g_dirty = true;
+                }
+                break;
+            case TOOL_GEM:
+                if (g_gemIdx && g_map.overlayType[idx] != g_gemIdx) {
+                    g_map.overlayType[idx] = g_gemIdx;
+                    g_map.overlayFrame[idx] = 0;
+                    g_dirty = true;
+                }
+                break;
+            case TOOL_CLEAR_OV:
+                if (g_map.overlayType[idx] || g_map.overlayFrame[idx]) {
+                    g_map.overlayType[idx] = 0;
+                    g_map.overlayFrame[idx] = 0;
+                    g_dirty = true;
+                }
+                break;
+            case TOOL_RAISE:
+            case TOOL_LOWER: {
+                auto it = g_cellAt.find(((uint32_t)(uint16_t)x << 16) | (uint16_t)y);
+                if (it == g_cellAt.end()) break;
+                auto& c = g_map.cells[it->second];
+                int nh = c.height + (g_tool == TOOL_RAISE ? 1 : -1);
+                if (nh < 0) nh = 0;
+                if (nh > 14) nh = 14;
+                if (nh != c.height) {
+                    c.height = (uint8_t)nh;
+                    g_dirty = true;
+                }
+                break;
+            }
+            }
+        }
+    }
+}
 
 static void RenderViewport(float availW, float availH) {
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.06f, 0.07f, 0.08f, 1));
@@ -432,51 +583,52 @@ static void RenderViewport(float availW, float availH) {
         screenToCellApprox(mouse, g_view.hoverCellX, g_view.hoverCellY);
         g_view.hoverTile = -1;
         g_view.hoverHeight = -1;
-        static int frame = 0;
-        if (++frame % 5 == 0 && g_loaded) {
-            int wantX = g_view.hoverCellX, wantY = g_view.hoverCellY;
-            for (size_t i = 0; i < g_map.cells.size(); i++) {
-                const auto& c = g_map.cells[i];
-                if (c.x == wantX && c.y == wantY) {
-                    g_view.hoverTile = c.tile;
-                    g_view.hoverHeight = c.height;
-                    break;
-                }
+        if (g_loaded) {
+            auto cit = g_cellAt.find(((uint32_t)(uint16_t)g_view.hoverCellX << 16) |
+                                     (uint16_t)g_view.hoverCellY);
+            if (cit != g_cellAt.end()) {
+                g_view.hoverTile = g_map.cells[cit->second].tile;
+                g_view.hoverHeight = g_map.cells[cit->second].height;
             }
         }
 
-        // waypoint interaction: pick on click, drag to move
-        float bestDist = 20 * 20;
-        int hitWp = -1;
-        ImVec2 hitPos;
-        for (const auto& w : g_map.waypoints) {
-            // find cell height at waypoint (approx via cached cells; 0 if unknown)
-            ImVec2 pos;
-            cellToScreen(w.rx, w.ry, 0, pos);
-            pos.x += hw; pos.y += hh; // diamond center
-            float dx = mouse.x - pos.x, dy = mouse.y - pos.y;
-            float d2 = dx * dx + dy * dy;
-            if (d2 < bestDist) {
-                bestDist = d2;
-                hitWp = w.id;
-                hitPos = pos;
-            }
-        }
-        if (ImGui::IsMouseClicked(0) && hitWp >= 0) {
-            g_view.selectedWp = hitWp;
-            g_view.draggingWp = true;
-        }
-        if (!io.MouseDown[0]) g_view.draggingWp = false;
-        if (g_view.draggingWp && g_view.selectedWp >= 0) {
-            int nx, ny;
-            screenToCellApprox(mouse, nx, ny);
-            for (auto& w : g_map.waypoints) {
-                if (w.id == g_view.selectedWp) {
-                    w.rx = nx;
-                    w.ry = ny;
-                    break;
+        // waypoint interaction (select tool): pick on click, drag to move
+        if (g_tool == TOOL_SELECT) {
+            float bestDist = 20 * 20;
+            int hitWp = -1;
+            for (const auto& w : g_map.waypoints) {
+                ImVec2 pos;
+                cellToScreen(w.rx, w.ry, 0, pos);
+                pos.x += hw; pos.y += hh;
+                float dx = mouse.x - pos.x, dy = mouse.y - pos.y;
+                float d2 = dx * dx + dy * dy;
+                if (d2 < bestDist) {
+                    bestDist = d2;
+                    hitWp = w.id;
                 }
             }
+            if (ImGui::IsMouseClicked(0) && hitWp >= 0) {
+                g_view.selectedWp = hitWp;
+                g_view.draggingWp = true;
+            }
+            if (!io.MouseDown[0]) g_view.draggingWp = false;
+            if (g_view.draggingWp && g_view.selectedWp >= 0) {
+                int nx, ny;
+                screenToCellApprox(mouse, nx, ny);
+                for (auto& w : g_map.waypoints) {
+                    if (w.id == g_view.selectedWp) {
+                        if (w.rx != nx || w.ry != ny) {
+                            w.rx = nx;
+                            w.ry = ny;
+                            g_dirty = true;
+                        }
+                        break;
+                    }
+                }
+            }
+        } else if (io.MouseDown[0] && g_loaded) {
+            // brush tools paint while the left button is held
+            ApplyBrush(g_view.hoverCellX, g_view.hoverCellY);
         }
     }
 
@@ -485,6 +637,7 @@ static void RenderViewport(float availW, float availH) {
         BuildAtlasIfNeeded();
         float pad = ATLAS_CELL * z;
         ImTextureID tex = (ImTextureID)g_atlasSrv;
+        bool haveOv = g_map.overlayType.size() == 512 * 512;
         for (int ci : g_drawOrder) {
             const auto& c = g_map.cells[ci];
             ImVec2 sp;
@@ -492,6 +645,7 @@ static void RenderViewport(float availW, float availH) {
             if (sp.x < p0.x - pad || sp.x > p0.x + size.x + pad ||
                 sp.y < p0.y - pad || sp.y > p0.y + size.y + pad)
                 continue;
+            bool drew = false;
             if (g_atlasSrv && c.tile >= 0) {
                 uint64_t key = ((uint64_t)(uint32_t)c.tile << 8) | c.subtile;
                 auto it = g_atlasSlot.find(key);
@@ -505,13 +659,24 @@ static void RenderViewport(float availW, float availH) {
                     ImVec2 pmin(sp.x - 2 * z, sp.y - (ATLAS_CELL - 30) * z);
                     dl->AddImage(tex, pmin, ImVec2(pmin.x + ATLAS_CELL * z, pmin.y + ATLAS_CELL * z),
                                  ImVec2(u0, v0), ImVec2(u1, v1));
-                    continue;
+                    drew = true;
                 }
             }
-            // fallback: flat shaded diamond
-            ImVec2 a(sp.x, sp.y), b(sp.x + hw, sp.y + hh), c2(sp.x + 2 * hw, sp.y), d(sp.x + hw, sp.y - hh);
-            float g = 0.25f + 0.05f * (c.height % 8);
-            dl->AddQuadFilled(a, b, c2, d, ImColor(g, g + 0.02f, g, 1.0f));
+            if (!drew) {
+                // fallback: flat shaded diamond
+                ImVec2 a(sp.x, sp.y), b(sp.x + hw, sp.y + hh), c2(sp.x + 2 * hw, sp.y), d(sp.x + hw, sp.y - hh);
+                float g = 0.25f + 0.05f * (c.height % 8);
+                dl->AddQuadFilled(a, b, c2, d, ImColor(g, g + 0.02f, g, 1.0f));
+            }
+            // overlay tint (ore / gems)
+            if (haveOv) {
+                uint8_t ov = g_map.overlayType[(size_t)c.y * 512 + c.x];
+                if (ov && (g_ovIsOre[ov] || g_ovIsGem[ov])) {
+                    ImVec2 a(sp.x, sp.y), b(sp.x + hw, sp.y + hh), c2(sp.x + 2 * hw, sp.y), d(sp.x + hw, sp.y - hh);
+                    dl->AddQuadFilled(a, b, c2, d,
+                                      g_ovIsGem[ov] ? IM_COL32(255, 205, 60, 95) : IM_COL32(70, 250, 120, 85));
+                }
+            }
         }
     }
 
@@ -582,6 +747,8 @@ void RenderFrame() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("文件")) {
             if (ImGui::MenuItem("打开地图...", "Ctrl+O")) OpenMapDialog(GetActiveWindow());
+            if (ImGui::MenuItem("保存", "Ctrl+S", false, g_loaded)) SaveMap(false);
+            if (ImGui::MenuItem("另存为...", nullptr, false, g_loaded)) SaveMap(true);
             if (ImGui::MenuItem("退出")) PostQuitMessage(0);
             ImGui::EndMenu();
         }
@@ -602,11 +769,12 @@ void RenderFrame() {
         }
         if (ImGui::BeginMenu("帮助")) {
             ImGui::Text("VERA20K 地图编辑器");
-            ImGui::Text("滚轮缩放 / 右键拖动平移 / 拖动路径点");
+            ImGui::Text("滚轮缩放 / 右键拖动平移 / 左键使用工具");
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
     }
+    if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_S) && g_loaded) SaveMap(false);
 
     if (!g_loaded) {
         ImGui::Dummy(ImVec2(0, 40));
@@ -620,7 +788,26 @@ void RenderFrame() {
     float panelW = 300.0f;
     ImGui::BeginChild("side", ImVec2(panelW, 0), true);
     ImGui::TextUnformatted(g_status.c_str());
+    if (g_dirty) ImGui::SameLine(), ImGui::TextUnformatted("*");
     ImGui::Separator();
+
+    // tools
+    ImGui::TextUnformatted("工具");
+    ImGui::RadioButton("选择 / 拖动路径点", &g_tool, TOOL_SELECT);
+    ImGui::RadioButton("矿石笔刷", &g_tool, TOOL_ORE);
+    ImGui::SameLine();
+    ImGui::RadioButton("宝石笔刷", &g_tool, TOOL_GEM);
+    ImGui::RadioButton("清除覆盖物", &g_tool, TOOL_CLEAR_OV);
+    ImGui::SameLine();
+    ImGui::RadioButton("升高地形", &g_tool, TOOL_RAISE);
+    ImGui::RadioButton("降低地形", &g_tool, TOOL_LOWER);
+    const char* sizes[] = {"1 格", "3x3", "5x5"};
+    ImGui::SetNextItemWidth(-1);
+    ImGui::Combo("笔刷大小", &g_brush, sizes, 3);
+    if (g_tool >= TOOL_ORE && g_tool <= TOOL_CLEAR_OV && !g_oreIdx && !g_gemIdx)
+        ImGui::TextColored(ImVec4(1, 0.7f, 0.3f, 1), "未识别矿石类型（需 rules）");
+    ImGui::Separator();
+
     if (ImGui::BeginTable("stats", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         auto row = [](const char* k, const std::string& v) {
             ImGui::TableNextRow();
@@ -699,6 +886,52 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     {
         int argc = 0;
         LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+        if (argv && argc == 4 && wcscmp(argv[1], L"--roundtrip") == 0) {
+            // map-tool.exe --roundtrip <in> <out>: load + serialize + save (save-path test)
+            std::string data = LoadFileUtf8(argv[2]);
+            std::string err;
+            if (!g_map.loadFromData(data, &err)) {
+                fprintf(stderr, "load FAIL: %s\n", err.c_str());
+                return 2;
+            }
+            std::string out;
+            try {
+                out = g_map.serializeToData();
+            } catch (const std::exception& e) {
+                fprintf(stderr, "serialize FAIL: %s\n", e.what());
+                return 3;
+            }
+            FILE* f = _wfopen(argv[3], L"wb");
+            if (!f) { fprintf(stderr, "write FAIL\n"); return 4; }
+            fwrite(out.data(), 1, out.size(), f);
+            fclose(f);
+            fprintf(stderr, "roundtrip OK: %d bytes in, %d bytes out, %d cells\n",
+                    (int)data.size(), (int)out.size(), (int)g_map.cells.size());
+            return 0;
+        }
+        if (argv && argc == 4 && wcscmp(argv[1], L"--extract") == 0) {
+            // map-tool.exe --extract <name-in-mix> <out-file> -- extracts from game dir mixes
+            LoadConfig();
+            std::string err;
+            if (!EnsureAssets(&err)) {
+                fprintf(stderr, "assets: %s\n", err.c_str());
+                return 3;
+            }
+            char name[256];
+            int nl = WideCharToMultiByte(CP_UTF8, 0, argv[2], lstrlenW(argv[2]), name, 255, nullptr, nullptr);
+            name[nl] = 0;
+            std::vector<uint8_t> data;
+            if (!g_assets->find(name, data)) {
+                fprintf(stderr, "not found: %s\n", name);
+                return 4;
+            }
+            FILE* f = _wfopen(argv[3], L"wb");
+            if (!f) { fprintf(stderr, "cannot write output\n"); return 5; }
+            fwrite(data.data(), 1, data.size(), f);
+            fclose(f);
+            fprintf(stderr, "extracted %d bytes\n", (int)data.size());
+            return 0;
+        }
         if (argv && argc == 3 && wcscmp(argv[1], L"--dump") == 0) {
             std::string data = LoadFileUtf8(argv[2]);
             std::string err;
@@ -710,6 +943,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
                 fprintf(stderr, "size=%d,%d,%d,%d\n", g_map.size[0], g_map.size[1], g_map.size[2], g_map.size[3]);
                 fprintf(stderr, "cells=%d\nhouses=%d\noverlay=%d\nwaypoints=%d\n",
                         (int)g_map.cells.size(), g_map.houseCount, g_map.overlayBytes, (int)g_map.waypoints.size());
+                if (g_map.overlayType.size() == 512 * 512) {
+                    unsigned sum = 0;
+                    int nz = 0;
+                    for (uint8_t v : g_map.overlayType) { sum += v; nz += (v != 0); }
+                    unsigned fsum = 0;
+                    for (uint8_t v : g_map.overlayFrame) fsum += v;
+                    fprintf(stderr, "overlaySum=%u nonZero=%d frameSum=%u\n", sum, nz, fsum);
+                }
                 for (auto& w : g_map.waypoints)
                     fprintf(stderr, "wp %d %d %d\n", w.id, w.rx, w.ry);
             }
