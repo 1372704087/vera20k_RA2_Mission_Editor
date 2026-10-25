@@ -10,6 +10,10 @@ add_executable(map-tool WIN32
     src/main.cpp
     src/ra2map.cpp
     src/ra2map.h
+    src/gamefiles.cpp
+    src/gamefiles.h
+    src/theater.cpp
+    src/theater.h
     3rdparty/minilzo/minilzo.c
     3rdparty/minilzo/minilzo.h
     ${IMGUI_DIR}/imgui.cpp
@@ -28,5 +32,5 @@ target_include_directories(map-tool PRIVATE
     3rdparty/minilzo
 )
 
-target_link_libraries(map-tool PRIVATE d3d11 dxgi dwmapi)
+target_link_libraries(map-tool PRIVATE d3d11 dxgi dwmapi ole32)
 target_compile_options(map-tool PRIVATE /utf-8)
