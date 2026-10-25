@@ -20,6 +20,7 @@ static ID3D11Device* g_device = nullptr;
 static ID3D11DeviceContext* g_ctx = nullptr;
 static IDXGISwapChain* g_swap = nullptr;
 static ID3D11RenderTargetView* g_rtv = nullptr;
+static HRESULT g_hrHw = S_OK, g_hrWarp = S_OK;
 
 static bool CreateDeviceD3D(HWND hwnd);
 static void CleanupDeviceD3D();
@@ -98,9 +99,15 @@ bool CreateDeviceD3D(HWND hwnd) {
 
     UINT flags = 0;
     D3D_FEATURE_LEVEL fl;
-    HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags,
-                                                nullptr, 0, D3D11_SDK_VERSION, &scd, &g_swap, &g_device, &fl, &g_ctx);
-    if (hr != S_OK) return false;
+    const D3D_FEATURE_LEVEL levels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0 };
+
+    // hardware first; fall back to WARP software rendering (remote desktop / VM without GPU)
+    g_hrHw = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags,
+                                            levels, ARRAYSIZE(levels), D3D11_SDK_VERSION, &scd, &g_swap, &g_device, &fl, &g_ctx);
+    if (g_hrHw != S_OK)
+        g_hrWarp = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, flags,
+                                                 levels, ARRAYSIZE(levels), D3D11_SDK_VERSION, &scd, &g_swap, &g_device, &fl, &g_ctx);
+    if (g_hrHw != S_OK && g_hrWarp != S_OK) return false;
 
     ID3D11Texture2D* back = nullptr;
     g_swap->GetBuffer(0, IID_PPV_ARGS(&back));
@@ -236,15 +243,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     }
 
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L,
-                       GetModuleHandleW(nullptr), nullptr, nullptr, nullptr,
-                       L"Vera20kMapTool", nullptr };
+                       GetModuleHandleW(nullptr), nullptr, nullptr, nullptr, nullptr,
+                       nullptr, nullptr };
+    wc.lpszClassName = L"Vera20kMapTool";
     RegisterClassExW(&wc);
     HWND hwnd = CreateWindowExW(0, wc.lpszClassName, L"VERA20K 地图工具",
                                 WS_OVERLAPPEDWINDOW, 100, 100, 1280, 860,
                                 nullptr, nullptr, wc.hInstance, nullptr);
 
     if (!CreateDeviceD3D(hwnd)) {
-        MessageBoxW(hwnd, L"D3D11 初始化失败", L"错误", MB_ICONERROR);
+        wchar_t msg[160];
+        swprintf(msg, 160, L"D3D11 初始化失败\n硬件: 0x%08lX  WARP: 0x%08lX",
+                 (unsigned long)g_hrHw, (unsigned long)g_hrWarp);
+        MessageBoxW(hwnd, msg, L"错误", MB_ICONERROR);
         return 1;
     }
 
